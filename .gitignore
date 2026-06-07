@@ -1,0 +1,6 @@
+# Compiled binary
+/go-advent
+
+# Go build/test artifacts
+*.test
+*.out
