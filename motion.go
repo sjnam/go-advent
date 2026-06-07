@@ -126,6 +126,15 @@ func (g *Game) determineNextLocation() {
 
 // advanceCondition은 q의 조건이 만족될 때까지 같은 목적지/조건 묶음을
 // 건너뛰며 전진한다. (advent.w "If the condition ... isn't satisfied")
+//
+// 조건값 cond의 인코딩 (advent.w:832-834):
+//
+//	cond==0       : 항상 참
+//	0<cond<100    : cond% 확률로 참
+//	cond==100     : 난쟁이만 빼고 항상 참
+//	100<cond<=200 : 물체 (cond%100)을 들고 있어야 함
+//	200<cond<=300 : 물체 (cond%100)이 현재 장소에 있어야 함
+//	cond>300      : prop[cond%100] != (cond-300)/100 여야 함
 func (g *Game) advanceCondition(q int) int {
 	for {
 		j := caveTravels[q].cond

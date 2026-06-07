@@ -12,29 +12,14 @@ type instruction struct {
 }
 
 // 위치 속성 비트. flags[loc]에 OR로 담긴다. (advent.w:796-804)
+// 힌트 비트는 giveHint가 caveHint(8)부터 두 배씩 순회한다:
+// 8 동굴 진입, 16 새, 32 뱀, 64 미로, 128 어둠, 256 Witt's End.
 const (
-	lighted   = 1   // 어둡지 않은 장소
-	oil       = 2   // 기름이 있음
-	liquid    = 4   // 액체(물 또는 기름)가 있음
-	caveHint  = 8   // 동굴에 들어가는 힌트
-	birdHint  = 16  // 새를 잡는 힌트
-	snakeHint = 32  // 뱀을 다루는 힌트
-	twistHint = 64  // 미로에서 길 잃는 힌트
-	darkHint  = 128 // 어두운 방 힌트
-	wittHint  = 256 // Witt's End 힌트
+	lighted  = 1 // 어둡지 않은 장소
+	oil      = 2 // 기름이 있음
+	liquid   = 4 // 액체(물 또는 기름)가 있음
+	caveHint = 8 // 힌트 비트의 시작(동굴 진입 힌트)
 )
-
-// 이동 조건(cond) 해석을 위한 헬퍼. (advent.w:832-834)
-//
-//	cond==0          : 항상 참
-//	0<cond<100       : cond% 확률로 참
-//	cond==100        : 난쟁이만 빼고 항상 참
-//	holds(o)         : 물체 o를 들고 있어야 함
-//	sees(o)          : 물체 o가 현재 장소에 있어야 함
-//	notProp(o,k)     : prop[o] != k 여야 함
-func holds(o object) int          { return 100 + int(o) }
-func sees(o object) int           { return 200 + int(o) }
-func notProp(o object, k int) int { return 300 + int(o) + 100*k }
 
 // remarkOf는 dest가 가리키는 "그 자리에 머물며 하는 말"을 돌려준다.
 // dest가 maxSpec보다 크면 remark 색인이다. (advent.w:768)

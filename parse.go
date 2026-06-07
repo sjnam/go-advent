@@ -97,7 +97,6 @@ parse:
 			fmt.Fprintf(g.out, "\"%s\" 같은 단어는 모르겠어.\n", g.word1)
 			goto cycle
 		}
-		g.commandType = e.typ
 		switch e.typ {
 		case motionType:
 			g.mot = motion(e.meaning)

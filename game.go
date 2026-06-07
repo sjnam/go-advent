@@ -34,19 +34,17 @@ type Game struct {
 	holding int                  // 들고 있는 객체 수
 
 	// 파싱/명령 상태 (parse.go 참고)
-	mot         motion   // 지금 지정된 이동
-	verb        action   // 지금 지정된 동작
-	oldverb     action   // 바뀌기 전 verb
-	obj         object   // 지금 지정된 객체
-	oldobj      object   // 이전 obj
-	commandType wordtype // 해시에서 찾은 단어의 종류
-	turns       int      // 명령을 읽은 횟수
-	speakIdx    int      // message_type 단어가 가리키는 메시지 인덱스
+	mot      motion // 지금 지정된 이동
+	verb     action // 지금 지정된 동작
+	oldverb  action // 바뀌기 전 verb
+	obj      object // 지금 지정된 객체
+	oldobj   object // 이전 obj
+	turns    int    // 명령을 읽은 횟수
+	speakIdx int    // message_type 단어가 가리키는 메시지 인덱스
 
 	// 상태 보고 상태
 	wasDark       bool // 최근에 어두웠는가
 	lookCount     int  // LOOK을 몇 번 했나
-	westCount     int  // "west"를 몇 번 파싱했나
 	interval      int  // BRIEF면 10000이 됨
 	tally         int  // 아직 못 본 보물 수
 	lostTreasures int  // 영영 못 볼 보물 수
