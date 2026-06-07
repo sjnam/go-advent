@@ -6,4 +6,6 @@
 *.out
 
 # 원작 CWEB 소스 (© Woods & Knuth, all rights reserved) — 저장소에 포함하지 않음
-advent.w
+# advent.w
+
+.gitignore
