@@ -7,7 +7,7 @@ Donald Knuth가 CWEB으로 작성한 **Colossal Cave Adventure**(`advent.w`)를 
 이 포팅의 목표는 단 하나입니다 — **원본과 한 바이트도 다르지 않게 동작할 것.**
 동시에 전역변수·goto·매크로로 짜인 C 구조를 Go다운 형태로 재설계했습니다.
 
-```
+```sh
 $ go run .
 Welcome to Adventure!!  Would you like instructions?
 ** no
@@ -66,7 +66,7 @@ go run . --seed=42
 - **역할별 파일 분리**:
 
   | 파일 | 내용 |
-  |---|---|
+  | --- | --- |
   | `main.go` | 플래그 파싱, 게임 시작 |
   | `game.go` | `Game` 구조체, 메인 루프, 상태 보고 |
   | `consts.go` | location/object/motion/action/wordtype enum |
