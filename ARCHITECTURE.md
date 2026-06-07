@@ -14,7 +14,7 @@
 
 게임은 결국 **두 겹의 순환**입니다.
 
-```
+```text
 큰 순환 (major) : 한 장소로 이동 → 그곳을 묘사
    └ 작은 순환 (minor) : 명령을 받아 동작 수행 …  (이동 명령이 나오면 큰 순환으로)
 ```
@@ -32,7 +32,7 @@
 ### 로직 (사람이 작성)
 
 | 파일 | 역할 | 핵심 |
-|---|---|---|
+| --- | --- | --- |
 | `main.go` | 진입점 | `--seed` 파싱, `Game` 생성, `Run()` |
 | `game.go` | **심장부** | `Game` 구조체, `Run`/`simulate`/`minorCycle`, 상태 보고, 힌트 |
 | `consts.go` | 상수 | location/object/motion/action/wordtype **enum** |
@@ -54,7 +54,7 @@
 ### 데이터
 
 | 파일 | 성격 | 내용 |
-|---|---|---|
+| --- | --- | --- |
 | `cavedata.go` | **생성**(DO NOT EDIT) | 장소 플래그·이동표(740개)·start 색인 |
 | `objdata.go` | **생성**(DO NOT EDIT) | 객체 그룹·노트 오프셋·초기 위치/속성 |
 | `cave_text.go` | 수동(한글) | 장소 설명·짧은 설명·remark |
@@ -143,7 +143,7 @@ death:
 ### 제어 흐름을 나타내는 타입들
 
 | 타입 | 파일 | 누가 돌려주나 | 뜻 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `inputResult` | parse.go | `getUserInput` | EOF / 이동 / 타동사 / 자동사 / 고정메시지 |
 | `objResult` | parse.go | `makeObjMeaningful` | 객체가 말이 됨 / 안 보임 / 사실은 이동 / 메시지 출력함 |
 | `smResult` | motion.go | `handleSpecialMotion` | 보통 / 제자리 / (BACK)곧장 이동 |
@@ -165,7 +165,7 @@ C의 관용구 → Go의 값 대응이 핵심입니다:
 
 명령 한 줄이 처리되는 길을 따라가 봅시다.
 
-```
+```text
 listen()            한 줄 읽어 word1/word2 (vocab.go)
    │
 getUserInput()      (parse.go)
@@ -230,7 +230,7 @@ reportState()       (game.go) 새 장소 묘사 + describeObjects()
 주석을 길잡이로 삼으세요. 큰 대응은 이렇습니다.
 
 | advent.w 섹션 | Go |
-|---|---|
+| --- | --- |
 | The vocabulary | `vocab.go`, `consts.go` |
 | Cave connections / data | `cavedata.go` + `cave.go` + `cave_text.go` |
 | Data structures for objects | `objects.go` + `objdata.go` + `obj_text.go` |
