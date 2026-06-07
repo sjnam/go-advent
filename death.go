@@ -9,20 +9,20 @@ const maxDeaths = 3 // 허용되는 죽음 횟수 (advent.w:4168)
 
 // 죽음·부활 때 하는 말. 짝수 인덱스는 부활 권유, 홀수는 부활 시 메시지. (advent.w:4183)
 var deathWishes = [2 * maxDeaths]string{
-	"Oh dear, you seem to have gotten yourself killed.  I might be able to\n" +
-		"help you out, but I've never really done this before.  Do you want me\n" +
-		"to try to reincarnate you?",
-	"All right.  But don't blame me if something goes wr......\n" +
-		"                 --- POOF!! ---\n" +
-		"You are engulfed in a cloud of orange smoke.  Coughing and gasping,\n" +
-		"you emerge from the smoke and find....",
-	"You clumsy oaf, you've done it again!  I don't know how long I can\n" +
-		"keep this up.  Do you want me to try reincarnating you again?",
-	"Okay, now where did I put my resurrection kit?....  >POOF!<\n" +
-		"Everything disappears in a dense cloud of orange smoke.",
-	"Now you've really done it!  I'm out of orange smoke!  You don't expect\n" +
-		"me to do a decent reincarnation without any orange smoke, do you?",
-	"Okay, if you're so smart, do it yourself!  I'm leaving!",
+	"이런, 너 그만 죽어 버린 것 같네.  내가 도와줄 수\n" +
+		"있을지도 모르겠지만, 사실 이런 건 해본 적이 없어.  널\n" +
+		"환생시켜 볼까?",
+	"좋아.  근데 뭔가 잘못돼도 날 탓하진 마......\n" +
+		"                 --- 펑!! ---\n" +
+		"넌 주황색 연기 구름에 휩싸여.  콜록대고 헐떡이며\n" +
+		"연기 속에서 빠져나와 보니....",
+	"이 칠칠맞은 녀석, 또 저질렀구나!  내가 이걸 얼마나 오래\n" +
+		"해줄 수 있을지 모르겠어.  널 또 환생시켜 볼까?",
+	"자, 내 부활 키트를 어디 뒀더라?....  >펑!<\n" +
+		"모든 것이 짙은 주황색 연기 구름 속으로 사라져.",
+	"이번엔 진짜 사고 쳤어!  주황색 연기가 다 떨어졌다고!  설마\n" +
+		"주황색 연기도 없이 제대로 된 환생을 바라는 건 아니겠지?",
+	"그래, 그렇게 잘났으면 직접 해 봐!  난 갈래!",
 }
 
 // handleDeath는 죽음을 처리한다. 부활하면 true, 게임을 끝내야 하면 false.
@@ -32,8 +32,8 @@ func (g *Game) handleDeath() bool {
 	g.dying = false
 	g.deathCount++
 	if g.closing() {
-		fmt.Fprintf(g.out, "It looks as though you're dead.  Well, seeing as how it's so close\n"+
-			"to closing time anyway, let's just call it a day.\n")
+		fmt.Fprintf(g.out, "넌 죽은 것 같아.  뭐, 어차피 폐쇄 시각이 코앞이니\n"+
+			"그냥 오늘은 여기까지 하자.\n")
 		return false
 	}
 	if !g.yes(deathWishes[2*g.deathCount-2], deathWishes[2*g.deathCount-1], g.ok()) ||
@@ -63,9 +63,9 @@ func (g *Game) handleDeath() bool {
 // dwarvesUpset: 폐쇄 후 난쟁이를 깨우면 떼로 칼을 던져 당신을 죽인다.
 // (advent.w dwarves_upset)
 func (g *Game) dwarvesUpset() actResult {
-	fmt.Fprintf(g.out, "The resulting ruckus has awakened the dwarves.  There are now several\n"+
-		"threatening little dwarves in the room with you!  Most of them throw\n"+
-		"knives at you!  All of them get you!\n")
+	fmt.Fprintf(g.out, "그 소동에 난쟁이들이 깨어났어.  이제 위협적인 작은 난쟁이\n"+
+		"여럿이 너랑 같은 방에 있어!  대부분이 너에게 칼을\n"+
+		"던져!  전부 다 맞혔어!\n")
 	g.die()
 	return aDone()
 }

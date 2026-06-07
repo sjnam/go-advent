@@ -63,8 +63,8 @@ func (g *Game) advanceDflag2() {
 		}
 		g.odloc[j] = g.dloc[j]
 	}
-	fmt.Fprintf(g.out, "A little dwarf just walked around a corner, saw you, threw a little\n"+
-		"axe at you, cursed, and ran away.  (The axe missed.)\n")
+	fmt.Fprintf(g.out, "작은 난쟁이 하나가 모퉁이를 돌다 널 보더니, 작은 도끼를\n"+
+		"네게 던지고는, 욕을 내뱉으며 달아났어.  (도끼는 빗나갔어.)\n")
 	g.drop(AXE, g.loc)
 }
 
@@ -81,13 +81,13 @@ func (g *Game) throwAxeAtDwarf() actResult {
 		g.dseen[j] = false
 		g.dkill++
 		if g.dkill == 1 {
-			fmt.Fprintf(g.out, "You killed a little dwarf.  The body vanishes in a cloud of greasy\n"+
-				"black smoke.\n")
+			fmt.Fprintf(g.out, "작은 난쟁이를 죽였어.  사체가 느끼한 검은 연기 구름 속으로\n"+
+				"사라져.\n")
 		} else {
-			fmt.Fprintf(g.out, "You killed a little dwarf.\n")
+			fmt.Fprintf(g.out, "작은 난쟁이를 죽였어.\n")
 		}
 	} else {
-		fmt.Fprintf(g.out, "You attack a little dwarf, but he dodges out of the way.\n")
+		fmt.Fprintf(g.out, "작은 난쟁이를 공격하지만, 녀석이 잽싸게 피해.\n")
 	}
 	g.drop(AXE, g.loc)
 	return g.stayPut()
@@ -159,11 +159,11 @@ func (g *Game) dwarfFollow(j int) {
 // dwarvesAttack: 위협하는 난쟁이들이 칼을 던진다. (advent.w "Make the threatening dwarves attack")
 func (g *Game) dwarvesAttack() {
 	if g.dtotal == 1 {
-		fmt.Fprintf(g.out, "There is a threatening little dwarf")
+		fmt.Fprintf(g.out, "위협적인 작은 난쟁이가 하나")
 	} else {
-		fmt.Fprintf(g.out, "There are %d threatening little dwarves", g.dtotal)
+		fmt.Fprintf(g.out, "위협적인 작은 난쟁이가 %d마리", g.dtotal)
 	}
-	fmt.Fprintf(g.out, " in the room with you!\n")
+	fmt.Fprintf(g.out, " 너랑 같은 방에 있어!\n")
 	if g.attack == 0 {
 		return
 	}
@@ -172,16 +172,16 @@ func (g *Game) dwarvesAttack() {
 	}
 	k := 0
 	if g.attack == 1 {
-		fmt.Fprintf(g.out, "One sharp nasty knife is thrown")
+		fmt.Fprintf(g.out, "날카롭고 고약한 칼 하나가 너에게 날아와")
 	} else {
 		k = 2
-		fmt.Fprintf(g.out, " %d of them throw knives", g.attack)
+		fmt.Fprintf(g.out, " 그중 %d마리가 너에게 칼을 던져", g.attack)
 	}
-	fmt.Fprintf(g.out, " at you --- ")
+	fmt.Fprintf(g.out, " --- ")
 	if g.stick <= 1 {
 		fmt.Fprintf(g.out, "%s!\n", attackMsg[k+g.stick])
 	} else {
-		fmt.Fprintf(g.out, "%d of them get you!\n", g.stick)
+		fmt.Fprintf(g.out, "그중 %d마리가 맞혔어!\n", g.stick)
 	}
 	if g.stick != 0 {
 		g.oldoldloc = g.loc
@@ -219,16 +219,15 @@ func (g *Game) pirateTrack() {
 		g.prop[LAMP] != 0 && g.here(LAMP):
 		g.pirateSpotted()
 	case g.odloc[0] != g.dloc[0] && g.pct(20):
-		fmt.Fprintf(g.out, "There are faint rustling noises from the darkness behind you.\n")
+		fmt.Fprintf(g.out, "네 뒤 어둠 속에서 희미하게 바스락거리는 소리가 들려.\n")
 	}
 }
 
 // takeBooty: 해적이 당신의 보물을 빼앗아 미로의 상자에 숨긴다. (advent.w "Take booty and hide it in the chest")
 func (g *Game) takeBooty() {
-	fmt.Fprintf(g.out, "Out from the shadows behind you pounces a bearded pirate!  \"Har, har,\"\n"+
-		"he chortles, \"I'll just take all this booty and hide it away with me\n"+
-		"chest deep in the maze!\"  He snatches your treasure and vanishes into\n"+
-		"the gloom.\n")
+	fmt.Fprintf(g.out, "네 뒤 그림자 속에서 수염 난 해적이 튀어나와!  \"하르, 하르,\" 그가\n"+
+		"낄낄대며 말해. \"이 노획물은 내가 몽땅 챙겨서 미로 깊숙이 내 상자에\n"+
+		"숨겨 두지!\"  그러더니 네 보물을 낚아채 어둠 속으로 사라져.\n")
 	g.snatchTreasures()
 	if g.pirateNotSpotted() {
 		g.moveChest()
@@ -259,11 +258,10 @@ func (g *Game) moveChest() {
 
 // pirateSpotted: 보물을 다 봤고 이 방엔 보물이 없을 때 해적을 목격한다. (advent.w "Let the pirate be spotted")
 func (g *Game) pirateSpotted() {
-	fmt.Fprintf(g.out, "There are faint rustling noises from the darkness behind you.  As you\n"+
-		"turn toward them, the beam of your lamp falls across a bearded pirate.\n"+
-		"He is carrying a large chest.  \"Shiver me timbers!\" he cries, \"I've\n"+
-		"been spotted!  I'd best hie meself off to the maze to hide me chest!\"\n"+
-		"With that, he vanishes into the gloom.\n")
+	fmt.Fprintf(g.out, "네 뒤 어둠 속에서 희미하게 바스락거리는 소리가 들려.  그쪽으로\n"+
+		"고개를 돌리자, 네 램프 불빛이 수염 난 해적을 비춰.  녀석은 큰 상자를\n"+
+		"들고 있어.  \"이런 제기랄!\" 그가 외쳐. \"들켜 버렸군!  얼른 미로로\n"+
+		"가서 내 상자를 숨겨야겠어!\"  그러더니 어둠 속으로 사라져.\n")
 	g.moveChest()
 	g.dloc[0], g.odloc[0] = chestLoc, chestLoc
 	g.dseen[0] = false
@@ -285,7 +283,7 @@ func (g *Game) dwarfBlock() {
 	if g.loc <= maxPirateLoc {
 		for j := 1; j <= nd; j++ {
 			if g.odloc[j] == g.newloc && g.dseen[j] {
-				fmt.Fprintf(g.out, "A little dwarf with a big knife blocks your way.\n")
+				fmt.Fprintf(g.out, "큰 칼을 든 작은 난쟁이가 네 길을 막아.\n")
 				g.newloc = g.loc
 				break
 			}

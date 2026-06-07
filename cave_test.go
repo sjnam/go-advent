@@ -3,14 +3,13 @@ package main
 import "testing"
 
 func TestCaveData(t *testing.T) {
-	// 출발지 road의 설명이 그 유명한 첫 문장인지
-	want := "You are standing at the end of a road before a small brick building.\n" +
-		"Around you is a forest.  A small stream flows out of the building and\n" +
-		"down a gully."
+	// 출발지 road의 설명이 그 유명한 첫 문장(한글)인지
+	want := "넌 작은 벽돌 건물 앞, 길 끝에 서 있어.  주위는 온통 숲이야.  건물에서\n" +
+		"작은 시냇물이 흘러나와 도랑을 따라 내려가."
 	if caveLongDesc[road] != want {
 		t.Errorf("road long_desc 불일치:\n%q", caveLongDesc[road])
 	}
-	if caveShortDesc[road] != "You're at end of road again." {
+	if caveShortDesc[road] != "다시 길 끝에 왔어." {
 		t.Errorf("road short_desc=%q", caveShortDesc[road])
 	}
 	if caveFlags[road] != lighted+liquid {

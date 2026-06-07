@@ -1,17 +1,16 @@
 package main
 
-// 게임이 출력하는 긴 문자열들. 원본의 char* 배열을 Go 문자열로 옮긴 것.
-// 단계가 진행되면서 여기에 메시지가 계속 추가된다.
+// 게임이 출력하는 긴 문자열들(한글). 원본의 char* 배열을 옮겨 번역한 것.
 
 // 어두운 곳에서 더 나아가려 할 때의 경고 (advent.w:2711)
-const pitchDarkMsg = "It is now pitch dark.  If you proceed you will most likely fall into a pit."
+const pitchDarkMsg = "이제 칠흑같이 어두워.  계속 가면 십중팔구 구덩이에 빠질 거야."
 
-// 거인 방 벽에 적힌 주문 (advent.w:3425)
+// 거인 방 벽에 적힌 주문 (advent.w:3425) — 주문은 영어 그대로 둔다.
 var incantation = [...]string{"fee", "fie", "foe", "foo", "fum"}
 
 // 난쟁이 칼 공격 결과 메시지 (advent.w:3860)
-var attackMsg = [...]string{"it misses", "it gets you",
-	"none of them hit you", "one of them gets you"}
+var attackMsg = [...]string{"빗나갔어", "맞았어",
+	"아무도 못 맞혔어", "하나가 맞혔어"}
 
 const nHints = 8
 
@@ -23,44 +22,41 @@ var hintThresh = [nHints]int{0, 0, 4, 5, 8, 75, 25, 20}
 
 // 각 힌트를 꺼내기 전에 던지는 질문. hintPrompt[0]은 환영 메시지.
 var hintPrompt = [nHints]string{
-	"Welcome to Adventure!!  Would you like instructions?",
-	"Hmmm, this looks like a clue, which means it'll cost you 10 points to\n" +
-		"read it.  Should I go ahead and read it anyway?",
-	"Are you trying to get into the cave?",
-	"Are you trying to catch the bird?",
-	"Are you trying to deal somehow with the snake?",
-	"Do you need help getting out of the maze?",
-	"Are you trying to explore beyond the Plover Room?",
-	"Do you need help getting out of here?",
+	"어드벤처에 온 걸 환영해!!  설명을 들어볼래?",
+	"흐음, 이건 단서 같은데, 읽으면 10점이 깎여.\n" +
+		"그래도 읽어줄까?",
+	"동굴 안으로 들어가려는 거야?",
+	"새를 잡으려는 거야?",
+	"뱀을 어떻게든 해보려는 거야?",
+	"미로에서 빠져나가는 데 도움이 필요해?",
+	"플로버 방 너머를 탐험하려는 거야?",
+	"여기서 나가는 데 도움이 필요해?",
 }
 
 // 각 힌트의 본문. hint[0]은 게임 설명(instructions).
 var hintText = [nHints]string{
-	"Somewhere nearby is Colossal Cave, where others have found fortunes in\n" +
-		"treasure and gold, though it is rumored that some who enter are never\n" +
-		"seen again.  Magic is said to work in the cave.  I will be your eyes\n" +
-		"and hands.  Direct me with commands of one or two words.  I should\n" +
-		"warn you that I look at only the first five letters of each word, so\n" +
-		"you'll have to enter \"NORTHEAST\" as \"NE\" to distinguish it from\n" +
-		"\"NORTH\".  Should you get stuck, type \"HELP\" for some general hints.\n" +
-		"For information on how to end your adventure, etc., type \"INFO\".\n" +
+	"이 근처 어딘가에 콜로설 동굴이 있어.  많은 이들이 그곳에서 보물과\n" +
+		"황금으로 부를 얻었지만, 들어간 사람 중 더러는 다시 보이지 않았다는\n" +
+		"소문도 있지.  동굴에서는 마법이 통한다고 해.  내가 네 눈과 손이\n" +
+		"되어줄게.  한두 단어짜리 명령으로 날 움직여 줘.  이를테면 \"북\",\n" +
+		"\"가져가 열쇠\", \"켜 램프\" 처럼.  마법 주문(xyzzy, plugh, plover\n" +
+		"같은 것들)은 영어 그대로 입력하면 돼.  막히면 \"도움말\"을 쳐서\n" +
+		"일반적인 힌트를 받을 수 있어.  모험을 끝내는 법 등이 궁금하면\n" +
+		"\"정보\"를 쳐 봐.\n" +
 		"                        -  -  -\n" +
-		"The first adventure program was developed by Willie Crowther.\n" +
-		"Most of the features of the current program were added by Don Woods;\n" +
-		"all of its bugs were added by Don Knuth.",
-	"It says, \"There is something strange about this place, such that one\n" +
-		"of the words I've always known now has a new effect.\"",
-	"The grate is very solid and has a hardened steel lock.  You cannot\n" +
-		"enter without a key, and there are no keys in sight.  I would recommend\n" +
-		"looking elsewhere for the keys.",
-	"Something seems to be frightening the bird just now and you cannot\n" +
-		"catch it no matter what you try.  Perhaps you might try later.",
-	"You can't kill the snake, or drive it away, or avoid it, or anything\n" +
-		"like that.  There is a way to get by, but you don't have the necessary\n" +
-		"resources right now.",
-	"You can make the passages look less alike by dropping things.",
-	"There is a way to explore that region without having to worry about\n" +
-		"falling into a pit.  None of the objects available is immediately\n" +
-		"useful for discovering the secret.",
-	"Don't go west.",
+		"최초의 어드벤처 프로그램은 Willie Crowther가 만들었어.\n" +
+		"지금 프로그램의 기능 대부분은 Don Woods가 더했고,\n" +
+		"버그는 전부 Don Knuth가 더했지.",
+	"이렇게 적혀 있어. \"이곳에는 묘한 기운이 감돌아서, 늘 알고 있던 단어\n" +
+		"하나가 이제 새로운 효력을 낸다.\"",
+	"창살은 아주 단단하고 강철 자물쇠가 채워져 있어.  열쇠 없이는 들어갈\n" +
+		"수 없는데, 열쇠는 보이지 않네.  다른 곳을 찾아보는 게 좋겠어.",
+	"지금은 뭔가가 새를 겁먹게 하고 있어서, 무슨 수를 써도 잡을 수 없어.\n" +
+		"나중에 다시 해보는 게 좋겠어.",
+	"뱀은 죽일 수도, 쫓아낼 수도, 피할 수도 없어.  지나갈 방법이 있긴\n" +
+		"한데, 지금은 필요한 게 없네.",
+	"물건을 떨어뜨려 두면 통로들이 덜 비슷해 보이게 만들 수 있어.",
+	"그 구역은 구덩이에 빠질 걱정 없이 탐험하는 방법이 있어.  지금 가진\n" +
+		"물건 중엔 당장 그 비밀을 푸는 데 쓸모 있는 게 없어.",
+	"서쪽으로 가지 마.",
 }

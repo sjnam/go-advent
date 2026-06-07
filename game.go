@@ -130,44 +130,48 @@ func (g *Game) yes(q, y, n string) bool {
 		if !more {
 			return false // EOF: 부정으로 간주
 		}
-		switch first := lowerByte(line); first {
-		case 'y':
+		switch affirmative(line) {
+		case 1:
 			if y != "" {
 				fmt.Fprintf(g.out, "%s\n", y)
 			}
 			return true
-		case 'n':
+		case 0:
 			if n != "" {
 				fmt.Fprintf(g.out, "%s\n", n)
 			}
 			return false
 		default:
-			fmt.Fprintf(g.out, " Please answer Yes or No.\n")
+			fmt.Fprintf(g.out, " \"예\" 아니면 \"아니\"로 대답해 줘.\n")
 		}
 	}
 }
 
-// lowerByte는 문자열 첫 바이트를 소문자로(없으면 공백) 돌려준다.
-func lowerByte(s string) byte {
-	if s == "" {
-		return ' '
+// affirmative는 답을 긍정(1)/부정(0)/모호(-1)로 가린다.
+// 한글 "예·응·ㅇ" 또는 영문 y는 긍정, "아니·안·ㄴ" 또는 영문 n은 부정.
+func affirmative(s string) int {
+	r := []rune(s)
+	if len(r) == 0 {
+		return -1
 	}
-	c := s[0]
-	if c >= 'A' && c <= 'Z' {
-		c += 'a' - 'A'
+	switch r[0] {
+	case '예', '응', 'ㅇ', 'y', 'Y':
+		return 1
+	case '아', '안', 'ㄴ', 'n', 'N':
+		return 0
 	}
-	return c
+	return -1
 }
 
 // offer는 환영 메시지(j==0)나 힌트(j>=2)를 제안한다.
 // (advent.w "Scoring"의 offer 서브루틴)
 func (g *Game) offer(j int) {
 	if j > 1 {
-		if !g.yes(hintPrompt[j], " I am prepared to give you a hint,", g.ok()) {
+		if !g.yes(hintPrompt[j], " 힌트를 줄 준비가 됐어,", g.ok()) {
 			return
 		}
-		fmt.Fprintf(g.out, " but it will cost you %d points.  ", hintCost[j])
-		g.hinted[j] = g.yes("Do you want the hint?", hintText[j], g.ok())
+		fmt.Fprintf(g.out, " 하지만 %d점이 깎일 거야.  ", hintCost[j])
+		g.hinted[j] = g.yes("힌트를 원해?", hintText[j], g.ok())
 	} else {
 		g.hinted[j] = g.yes(hintPrompt[j], hintText[j], g.ok())
 	}
@@ -325,7 +329,7 @@ func (g *Game) reportState() bool {
 	if g.dark() && !forcedMove(g.loc) {
 		if g.wasDark && g.pct(35) {
 			// 어둠 속에서 구덩이에 떨어져 죽는다. (advent.w pitch_dark)
-			fmt.Fprintf(g.out, "You fell into a pit and broke every bone in your body!\n")
+			fmt.Fprintf(g.out, "구덩이에 떨어져서 온몸의 뼈가 다 부러졌어!\n")
 			g.oldoldloc = g.loc
 			g.die()
 			return false
@@ -337,7 +341,7 @@ func (g *Game) reportState() bool {
 		p = caveShortDesc[g.loc]
 	}
 	if g.toting(BEAR) {
-		fmt.Fprintf(g.out, "You are being followed by a very large, tame bear.\n")
+		fmt.Fprintf(g.out, "아주 크고 온순한 곰이 널 따라오고 있어.\n")
 	}
 	if p != "" {
 		fmt.Fprintf(g.out, "\n%s\n", p)
@@ -346,7 +350,7 @@ func (g *Game) reportState() bool {
 		return true
 	}
 	if g.loc == y2 && g.pct(25) && !g.closing() {
-		fmt.Fprintf(g.out, "A hollow voice says \"PLUGH\".\n")
+		fmt.Fprintf(g.out, "공허한 목소리가 \"PLUGH\"라고 말해.\n")
 	}
 	if !g.dark() {
 		g.describeObjects()

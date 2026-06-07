@@ -20,27 +20,20 @@ func TestVocabLookup(t *testing.T) {
 		mean int
 		ok   bool
 	}{
-		{"take", actionType, int(TAKE), true},
-		{"xyzzy", motionType, int(XYZZY), true},
-		{"nugge", objectType, int(GOLD), true},
-		{"northeast", motionType, int(NE), false}, // 5자 절단→"north"=N, NE 아님
-		{"north", motionType, int(N), true},
+		{"가져가", actionType, int(TAKE), true},
+		{"금괴", objectType, int(GOLD), true},
+		{"북", motionType, int(N), true},
+		{"북동", motionType, int(NE), true},       // 한글은 전체 단어 매칭(절단 없음)
+		{"xyzzy", motionType, int(XYZZY), true}, // 주문은 영어 유지
 		{"plugh", motionType, int(PLUGH), true},
-		{"help", messageType, 1, true},
-		{"abra", messageType, 0, true},
-		{"swim", messageType, 12, true},
-		{"tickl", noType, 0, false}, // 모르는 단어
-		{"h2o", objectType, int(WATER), true},
+		{"도움말", messageType, 1, true},
+		{"수리수리", messageType, 0, true},
+		{"수영", messageType, 12, true},
+		{"틱탁", noType, 0, false}, // 모르는 단어
+		{"물", objectType, int(WATER), true},
 	}
 	for _, c := range cases {
 		e, ok := g.lookup(c.word)
-		if c.word == "northeast" {
-			// "north"로 잘려 N으로 인식되는지 확인
-			if !ok || e.typ != motionType || e.meaning != int(N) {
-				t.Errorf("lookup(northeast) 절단 결과 = %+v,%v; want N", e, ok)
-			}
-			continue
-		}
 		if ok != c.ok {
 			t.Errorf("lookup(%q) ok=%v, want %v", c.word, ok, c.ok)
 			continue
@@ -56,10 +49,10 @@ func TestDefaultMsgChaining(t *testing.T) {
 	if g.defaultMsg[CLOSE] != g.defaultMsg[OPEN] || g.defaultMsg[OPEN] == "" {
 		t.Error("CLOSE는 OPEN 메시지를 공유해야 함")
 	}
-	if g.defaultMsg[QUIT] != "Eh?" {
-		t.Errorf("QUIT 기본메시지=%q, want SCORE의 Eh?", g.defaultMsg[QUIT])
+	if g.defaultMsg[QUIT] != "응?" {
+		t.Errorf("QUIT 기본메시지=%q, want SCORE의 \"응?\"", g.defaultMsg[QUIT])
 	}
-	if g.ok() != "OK." {
-		t.Errorf("ok()=%q, want OK.", g.ok())
+	if g.ok() != "알았어." {
+		t.Errorf("ok()=%q, want \"알았어.\"", g.ok())
 	}
 }

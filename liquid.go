@@ -28,7 +28,7 @@ func (g *Game) doDrink() actResult {
 	}
 	g.prop[BOTTLE] = 1
 	g.place[WATER] = limbo
-	return g.rep("The bottle of water is now empty.")
+	return g.rep("이제 물병이 비었어.")
 }
 
 func (g *Game) doPour() actResult {
@@ -49,7 +49,7 @@ func (g *Game) doPour() actResult {
 		return g.repDefault()
 	}
 	if g.obj != WATER && g.obj != OIL {
-		return g.rep("You can't pour that.")
+		return g.rep("그건 부을 수 없어.")
 	}
 	g.prop[BOTTLE] = 1
 	g.place[g.obj] = limbo
@@ -59,12 +59,12 @@ func (g *Game) doPour() actResult {
 	if g.loc == g.place[DOOR] {
 		return g.pourOnDoor()
 	}
-	return g.rep("Your bottle is empty and the ground is wet.")
+	return g.rep("병이 비고 바닥이 젖었어.")
 }
 
 func (g *Game) waterPlant() actResult {
 	if g.obj != WATER {
-		return g.rep("The plant indignantly shakes the oil off its leaves and asks, \"Water?\"")
+		return g.rep("식물이 발끈해서 잎의 기름을 털어내며 묻네.  \"물은?\"")
 	}
 	fmt.Fprintf(g.out, "%s\n", objNote[g.prop[PLANT]+1+objOffset[PLANT]])
 	g.prop[PLANT] += 2
@@ -79,10 +79,10 @@ func (g *Game) pourOnDoor() actResult {
 	switch g.obj {
 	case WATER:
 		g.prop[DOOR] = 0
-		return g.rep("The hinges are quite thoroughly rusted now and won't budge.")
+		return g.rep("이제 경첩이 완전히 녹슬어서 꿈쩍도 안 해.")
 	case OIL:
 		g.prop[DOOR] = 1
-		return g.rep("The oil has freed up the hinges so that the door will now open.")
+		return g.rep("기름이 경첩을 풀어줘서 이제 문이 열려.")
 	}
 	return aDone()
 }
@@ -100,10 +100,10 @@ func (g *Game) doFill() actResult {
 		return g.repDefault()
 	}
 	if !g.bottleEmpty() {
-		return g.rep("Your bottle is already full.")
+		return g.rep("병은 이미 가득 찼어.")
 	}
 	if g.noLiquidHere() {
-		return g.rep("There is nothing here with which to fill the bottle.")
+		return g.rep("여기엔 병을 채울 만한 게 없어.")
 	}
 	g.prop[BOTTLE] = caveFlags[g.loc] & oil
 	if g.toting(BOTTLE) {
@@ -114,21 +114,21 @@ func (g *Game) doFill() actResult {
 		}
 	}
 	if g.prop[BOTTLE] != 0 {
-		fmt.Fprintf(g.out, "Your bottle is now full of oil.\n")
+		fmt.Fprintf(g.out, "이제 병에 기름이 가득해.\n")
 	} else {
-		fmt.Fprintf(g.out, "Your bottle is now full of water.\n")
+		fmt.Fprintf(g.out, "이제 병에 물이 가득해.\n")
 	}
 	return aDone()
 }
 
 func (g *Game) fillVase() actResult {
 	if g.noLiquidHere() {
-		return g.rep("There is nothing here with which to fill the vase.\n")
+		return g.rep("여기엔 꽃병을 채울 만한 게 없어.\n")
 	}
 	if !g.toting(VASE) {
 		return g.defTo(DROP)
 	}
-	fmt.Fprintf(g.out, "The sudden change in temperature has delicately shattered the vase.\n")
+	fmt.Fprintf(g.out, "급격한 온도 변화에 꽃병이 섬세하게 산산조각 났어.\n")
 	return g.smashVase()
 }
 
@@ -140,15 +140,15 @@ func (g *Game) doTake() actResult {
 	}
 	if objBase[g.obj] != NOTHING { // 움직일 수 없는 물건
 		if g.obj == CHAIN && g.prop[BEAR] != 0 {
-			return g.rep("The chain is still locked.")
+			return g.rep("사슬은 아직 잠겨 있어.")
 		}
 		if g.obj == BEAR && g.prop[BEAR] == 1 {
-			return g.rep("The bear is still chained to the wall.")
+			return g.rep("곰은 아직 벽에 사슬로 묶여 있어.")
 		}
 		if g.obj == PLANT && g.prop[PLANT] <= 0 {
-			return g.rep("The plant has exceptionally deep roots and cannot be pulled free.")
+			return g.rep("식물은 뿌리가 유난히 깊어서 뽑아낼 수가 없어.")
 		}
-		return g.rep("You can't be serious!")
+		return g.rep("설마 진심은 아니겠지!")
 	}
 	if g.obj == WATER || g.obj == OIL {
 		if r, done := g.takeLiquid(); done {
@@ -156,7 +156,7 @@ func (g *Game) doTake() actResult {
 		}
 	}
 	if g.holding >= 7 {
-		return g.rep("You can't carry anything more.  You'll have to drop something first.")
+		return g.rep("더는 못 들어.  먼저 뭔가 내려놔야 해.")
 	}
 	if g.obj == BIRD && g.prop[BIRD] == 0 {
 		if r, done := g.takeBird(); done {
@@ -188,20 +188,20 @@ func (g *Game) takeLiquid() (actResult, bool) {
 	if g.toting(BOTTLE) {
 		return aChange(FILL), true
 	}
-	return g.rep("You have nothing in which to carry it."), true
+	return g.rep("그걸 담아 갈 게 없어."), true
 }
 
 // takeBird: 새는 막대를 들고 있으면 못 잡고, 새장이 있어야 데려간다.
 // (advent.w "Check special cases for taking a bird")
 func (g *Game) takeBird() (actResult, bool) {
 	if g.toting(ROD) {
-		return g.rep("The bird was unafraid when you entered, but as you approach it becomes\n" +
-			"disturbed and you cannot catch it."), true
+		return g.rep("네가 들어왔을 땐 새가 겁내지 않았는데, 다가가니까\n" +
+			"불안해해서 잡을 수가 없어."), true
 	}
 	if g.toting(CAGE) {
 		g.prop[BIRD] = 1
 	} else {
-		return g.rep("You can catch the bird, but you cannot carry it."), true
+		return g.rep("새를 잡을 순 있지만, 데려갈 순 없어."), true
 	}
 	return actResult{}, false
 }
@@ -252,8 +252,8 @@ func (g *Game) putCoins() actResult {
 
 func (g *Game) dropBird(k *bool) (actResult, bool) {
 	if g.here(SNAKE) {
-		fmt.Fprintf(g.out, "The little bird attacks the green snake, and in an astounding flurry\n"+
-			"drives the snake away.\n")
+		fmt.Fprintf(g.out, "작은 새가 초록 뱀을 공격해, 놀랍도록 격렬하게 퍼덕이며\n"+
+			"뱀을 쫓아 버려.\n")
 		*k = true
 		if g.closed {
 			return g.dwarvesUpset(), true
@@ -268,8 +268,8 @@ func (g *Game) dropBird(k *bool) (actResult, bool) {
 		if g.place[SNAKE] == hmk {
 			g.lostTreasures++
 		}
-		return g.rep("The little bird attacks the green dragon, and in an astounding flurry\n" +
-			"gets burnt to a cinder.  The ashes blow away."), true
+		return g.rep("작은 새가 초록 용을 공격해, 놀랍도록 격렬하게 퍼덕이다가\n" +
+			"잿더미가 되도록 타 버려.  재가 바람에 흩날려 가."), true
 	}
 	return actResult{}, false
 }
@@ -288,8 +288,8 @@ func (g *Game) dropVase(k *bool) {
 }
 
 func (g *Game) chaseTroll(k *bool) {
-	fmt.Fprintf(g.out, "The bear lumbers toward the troll, who lets out a startled shriek and\n"+
-		"scurries away.  The bear soon gives up the pursuit and wanders back.\n")
+	fmt.Fprintf(g.out, "곰이 트롤 쪽으로 어슬렁어슬렁 다가가자, 트롤은 깜짝 놀라 비명을\n"+
+		"지르며 잽싸게 달아나.  곰은 곧 추격을 포기하고 어슬렁어슬렁 돌아와.\n")
 	*k = true
 	g.destroy(TROLL)
 	g.destroy(TROLL_)
@@ -337,10 +337,10 @@ func (g *Game) doToss() actResult {
 		return g.throwAxeAtDwarf()
 	}
 	if g.isAtLoc(DRAGON) && g.prop[DRAGON] == 0 {
-		fmt.Fprintf(g.out, "The axe bounces harmlessly off the dragon's thick scales.\n")
+		fmt.Fprintf(g.out, "도끼가 용의 두꺼운 비늘에 맞고 힘없이 튕겨 나가.\n")
 	} else if g.isAtLoc(TROLL) {
-		fmt.Fprintf(g.out, "The troll deftly catches the axe, examines it carefully, and tosses it\n"+
-			"back, declaring, \"Good workmanship, but it's not valuable enough.\"\n")
+		fmt.Fprintf(g.out, "트롤이 도끼를 날렵하게 받아 꼼꼼히 살펴보더니, 다시 던지며\n"+
+			"이렇게 말해.  \"솜씨는 좋군, 한데 값어치가 영 모자라.\"\n")
 	} else if g.here(BEAR) && g.prop[BEAR] == 0 {
 		return g.throwAxeAtBear()
 	} else {
@@ -359,7 +359,7 @@ func (g *Game) snarfTreasure() actResult {
 	g.drop(TROLL2_, neside)
 	g.move(BRIDGE, swside)
 	g.move(BRIDGE_, neside)
-	return g.rep("The troll catches your treasure and scurries away out of sight.")
+	return g.rep("트롤이 네 보물을 낚아채 시야 밖으로 잽싸게 달아나.")
 }
 
 func (g *Game) throwAxeAtBear() actResult {
@@ -369,5 +369,5 @@ func (g *Game) throwAxeAtBear() actResult {
 	if g.place[BEAR] == g.loc {
 		g.move(BEAR, g.loc)
 	}
-	return g.rep("The axe misses and lands near the bear where you can't get at it.")
+	return g.rep("도끼가 빗나가 곰 옆에 떨어져서, 네가 닿을 수 없는 곳에 가 버렸어.")
 }

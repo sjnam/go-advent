@@ -14,34 +14,34 @@ func (g *Game) doKill() actResult {
 	}
 	switch g.obj {
 	case NOTHING:
-		return g.rep("There is nothing here to attack.")
+		return g.rep("여기엔 공격할 게 없어.")
 	case BIRD:
 		return g.dispatchBird()
 	case DRAGON:
 		if g.prop[DRAGON] == 0 {
 			return g.funStuffDragon()
 		}
-		return g.rep("For crying out loud, the poor thing is already dead!")
+		return g.rep("맙소사, 그 불쌍한 녀석은 이미 죽었어!")
 	case CLAM, OYSTER:
-		return g.rep("The shell is very strong and impervious to attack.")
+		return g.rep("껍데기가 아주 단단해서 공격이 안 통해.")
 	case SNAKE:
-		return g.rep("Attacking the snake both doesn't work and is very dangerous.")
+		return g.rep("뱀을 공격하는 건 소용도 없고 아주 위험해.")
 	case DWARF:
 		if g.closed {
 			return g.dwarvesUpset()
 		}
-		return g.rep("With what?  Your bare hands?")
+		return g.rep("뭘로?  맨손으로?")
 	case TROLL:
-		return g.rep("Trolls are close relatives with the rocks and have skin as tough as\n" +
-			"a rhinoceros hide.  The troll fends off your blows effortlessly.")
+		return g.rep("트롤은 바위와 가까운 친척이라 살갗이\n" +
+			"코뿔소 가죽처럼 질겨.  트롤은 네 공격을 가뿐히 막아내.")
 	case BEAR:
 		switch g.prop[BEAR] {
 		case 0:
-			return g.rep("With what?  Your bare hands?  Against HIS bear hands?")
+			return g.rep("뭘로?  맨손으로?  녀석의 곰 같은 손을 상대로?")
 		case 3:
-			return g.rep("For crying out loud, the poor thing is already dead!")
+			return g.rep("맙소사, 그 불쌍한 녀석은 이미 죽었어!")
 		default:
-			return g.rep("The bear is confused; he only wants to be your friend.")
+			return g.rep("곰이 어리둥절해해.  그냥 네 친구가 되고 싶을 뿐이야.")
 		}
 	default:
 		return g.repDefault()
@@ -90,27 +90,27 @@ func (g *Game) uniqueAttack() (actResult, bool) {
 
 func (g *Game) dispatchBird() actResult {
 	if g.closed {
-		return g.rep("Oh, leave the poor unhappy bird alone.")
+		return g.rep("아, 그 불쌍한 새는 좀 내버려 둬.")
 	}
 	g.destroy(BIRD)
 	g.prop[BIRD] = 0
 	if g.place[SNAKE] == hmk {
 		g.lostTreasures++
 	}
-	return g.rep("The little bird is now dead.  Its body disappears.")
+	return g.rep("작은 새가 죽었어.  사체가 사라져.")
 }
 
 // funStuffDragon: 맨손으로 용을 공격하겠다고 우기면 용이 죽는다. (advent.w "Fun stuff for dragon")
 func (g *Game) funStuffDragon() actResult {
-	fmt.Fprintf(g.out, "With what?  Your bare hands?\n")
+	fmt.Fprintf(g.out, "뭘로?  맨손으로?\n")
 	g.verb = ABSTAIN
 	g.obj = NOTHING
 	if !g.listen() {
 		g.quitting = true
 		return aDone()
 	}
-	if !(streq(g.word1, "yes") || streq(g.word1, "y")) {
-		// TODO(11단계): 정확히는 이 입력을 명령으로 재처리(goto pre_parse).
+	if !(streq(g.word1, "예") || streq(g.word1, "응") || streq(g.word1, "y")) {
+		// TODO: 정확히는 이 입력을 명령으로 재처리(goto pre_parse).
 		return aDone()
 	}
 	fmt.Fprintf(g.out, "%s\n", objNote[objOffset[DRAGON]+1])
@@ -135,10 +135,10 @@ func (g *Game) funStuffDragon() actResult {
 func (g *Game) doFeed() actResult {
 	switch g.obj {
 	case BIRD:
-		return g.rep("It's not hungry (it's merely pinin' for the fjords).  Besides, you\n" +
-			"have no bird seed.")
+		return g.rep("배가 안 고파 (그냥 피오르를 그리워하는 것뿐이야).  게다가 넌\n" +
+			"새 모이도 없잖아.")
 	case TROLL:
-		return g.rep("Gluttony is not one of the troll's vices.  Avarice, however, is.")
+		return g.rep("탐식은 트롤의 악덕이 아니야.  하지만 탐욕은 맞지.")
 	case DRAGON:
 		if g.prop[DRAGON] != 0 {
 			return g.rep(g.defaultMsg[EAT])
@@ -148,7 +148,7 @@ func (g *Game) doFeed() actResult {
 			g.destroy(BIRD)
 			g.prop[BIRD] = 0
 			g.lostTreasures++
-			return g.rep("The snake has now devoured your bird.")
+			return g.rep("뱀이 네 새를 삼켜 버렸어.")
 		}
 	case BEAR:
 		if !g.here(FOOD) {
@@ -164,18 +164,18 @@ func (g *Game) doFeed() actResult {
 		g.prop[BEAR] = 1
 		g.prop[AXE] = 0
 		objBase[AXE] = NOTHING // 도끼를 다시 들 수 있다
-		return g.rep("The bear eagerly wolfs down your food, after which he seems to calm\n" +
-			"down considerably and even becomes rather friendly.")
+		return g.rep("곰이 네 음식을 게걸스레 먹어 치우더니, 그러고 나서 한결\n" +
+			"누그러지고 심지어 꽤 친근해지기까지 해.")
 	case DWARF:
 		if !g.here(FOOD) {
 			return g.repDefault()
 		}
 		g.dflag++
-		return g.rep("You fool, dwarves eat only coal!  Now you've made him REALLY mad!")
+		return g.rep("이 바보야, 난쟁이는 석탄만 먹어!  이제 녀석을 제대로 화나게 했어!")
 	default:
 		return g.rep(g.defaultMsg[CALM])
 	}
-	return g.rep("There's nothing here it wants to eat (except perhaps you).")
+	return g.rep("여기엔 그게 먹고 싶어 할 만한 게 없어 (너라면 모를까).")
 }
 
 // ---- OPEN / CLOSE ----
@@ -186,18 +186,18 @@ func (g *Game) doOpenClose() actResult {
 		return g.openClam()
 	case GRATE, CHAIN:
 		if !g.here(KEYS) {
-			return g.rep("You have no keys!")
+			return g.rep("열쇠가 없잖아!")
 		}
 		return g.openGrateChain()
 	case KEYS:
-		return g.rep("You can't lock or unlock the keys.")
+		return g.rep("열쇠를 잠그거나 열 순 없어.")
 	case CAGE:
-		return g.rep("It has no lock.")
+		return g.rep("그건 자물쇠가 없어.")
 	case DOOR:
 		if g.prop[DOOR] != 0 {
 			return g.defTo(RELAX)
 		}
-		return g.rep("The door is extremely rusty and refuses to open.")
+		return g.rep("문은 몹시 녹슬어서 열리지 않아.")
 	default:
 		return g.repDefault()
 	}
@@ -219,13 +219,13 @@ func (g *Game) openGrateChain() actResult {
 	}
 	switch k + 2*g.prop[GRATE] {
 	case 0:
-		return g.rep("It was already locked.")
+		return g.rep("이미 잠겨 있었어.")
 	case 1:
-		return g.rep("The grate is now locked.")
+		return g.rep("이제 창살이 잠겼어.")
 	case 2:
-		return g.rep("The grate is now unlocked.")
+		return g.rep("이제 창살이 열렸어.")
 	default: // 3
-		return g.rep("It was already unlocked.")
+		return g.rep("이미 열려 있었어.")
 	}
 }
 
@@ -234,26 +234,26 @@ func (g *Game) openCloseChain() actResult {
 		return g.openChain()
 	}
 	if g.loc != barr {
-		return g.rep("There is nothing here to which the chain can be locked.")
+		return g.rep("여기엔 사슬을 채울 만한 게 없어.")
 	}
 	if g.prop[CHAIN] != 0 {
-		return g.rep("It was already locked.")
+		return g.rep("이미 잠겨 있었어.")
 	}
 	g.prop[CHAIN] = 2
 	objBase[CHAIN] = CHAIN
 	if g.toting(CHAIN) {
 		g.drop(CHAIN, g.loc)
 	}
-	return g.rep("The chain is now locked.")
+	return g.rep("이제 사슬이 잠겼어.")
 }
 
 func (g *Game) openChain() actResult {
 	if g.prop[CHAIN] == 0 {
-		return g.rep("It was already unlocked.")
+		return g.rep("이미 열려 있었어.")
 	}
 	if g.prop[BEAR] == 0 {
-		return g.rep("There is no way to get past the bear to unlock the chain, which is\n" +
-			"probably just as well.")
+		return g.rep("곰을 지나쳐 사슬을 풀 방법이 없어, 뭐\n" +
+			"어쩌면 다행이지만.")
 	}
 	g.prop[CHAIN] = 0
 	objBase[CHAIN] = NOTHING // 사슬이 풀렸다
@@ -263,38 +263,38 @@ func (g *Game) openChain() actResult {
 		g.prop[BEAR] = 2
 		objBase[BEAR] = NOTHING
 	}
-	return g.rep("The chain is now unlocked.")
+	return g.rep("이제 사슬이 풀렸어.")
 }
 
 func (g *Game) openClam() actResult {
-	name := "oyster"
+	name := "굴"
 	if g.obj == CLAM {
-		name = "clam"
+		name = "대합"
 	}
 	if g.verb == CLOSE {
-		return g.rep("What?")
+		return g.rep("뭐라고?")
 	}
 	if !g.toting(TRIDENT) {
-		fmt.Fprintf(g.out, "You don't have anything strong enough to open the %s", name)
+		fmt.Fprintf(g.out, "%s을 열 만큼 강한 게 없어", name)
 		return g.rep(".")
 	}
 	if g.toting(g.obj) {
-		fmt.Fprintf(g.out, "I advise you to put down the %s before opening it.  ", name)
+		fmt.Fprintf(g.out, "%s을 열기 전에 내려놓는 게 좋겠어.  ", name)
 		if g.obj == CLAM {
-			return g.rep(">STRAIN!<")
+			return g.rep(">끙!<")
 		}
-		return g.rep(">WRENCH!<")
+		return g.rep(">으드득!<")
 	}
 	if g.obj == CLAM {
 		g.destroy(CLAM)
 		g.drop(OYSTER, g.loc)
 		g.drop(PEARL, sac)
-		return g.rep("A glistening pearl falls out of the clam and rolls away.  Goodness,\n" +
-			"this must really be an oyster.  (I never was very good at identifying\n" +
-			"bivalves.)  Whatever it is, it has now snapped shut again.")
+		return g.rep("반짝이는 진주가 대합에서 굴러 나와 떼구루루 굴러가.  세상에,\n" +
+			"이거 진짜 굴이었나 봐.  (난 조개 종류를 구분하는 데\n" +
+			"영 소질이 없었어.)  뭐가 됐든, 이제 다시 딱 닫혀 버렸어.")
 	}
-	return g.rep("The oyster creaks open, revealing nothing but oyster inside.\n" +
-		"It promptly snaps shut again.")
+	return g.rep("굴이 삐걱 열리는데, 안에는 굴 말고 아무것도 없어.\n" +
+		"곧바로 다시 딱 닫혀.")
 }
 
 // ---- READ ----
@@ -305,15 +305,15 @@ func (g *Game) doRead() actResult {
 	}
 	switch g.obj {
 	case MAG:
-		return g.rep("I'm afraid the magazine is written in dwarvish.")
+		return g.rep("안타깝지만 잡지는 난쟁이 말로 쓰여 있어.")
 	case TABLET:
-		return g.rep("\"CONGRATULATIONS ON BRINGING LIGHT INTO THE DARK-ROOM!\"")
+		return g.rep("\"어둠의 방에 빛을 가져온 걸 축하한다!\"")
 	case MESSAGE:
-		return g.rep("\"This is not the maze where the pirate hides his treasure chest.\"")
+		return g.rep("\"여긴 해적이 보물 상자를 숨기는 미로가 아니다.\"")
 	case OYSTER:
 		if g.hinted[1] {
 			if g.toting(OYSTER) {
-				return g.rep("It says the same thing it did before.")
+				return g.rep("전에 했던 말이랑 똑같은 소리야.")
 			}
 		} else if g.closed && g.toting(OYSTER) {
 			g.offer(1)
@@ -330,7 +330,7 @@ func (g *Game) cantSeeIt() actResult {
 	if (g.verb == FIND || g.verb == INVENTORY) && g.word2 == "" {
 		return aChange(g.verb)
 	}
-	fmt.Fprintf(g.out, "I see no %s here.\n", g.word1)
+	fmt.Fprintf(g.out, "여기 %s 같은 건 안 보여.\n", g.word1)
 	return aDone()
 }
 
@@ -354,5 +354,5 @@ func (g *Game) doSay() actResult {
 			return aChange(g.verb)
 		}
 	}
-	return g.rep(fmt.Sprintf("Okay, \"%s\".", g.word1))
+	return g.rep(fmt.Sprintf("그래, \"%s\".", g.word1))
 }

@@ -22,16 +22,8 @@ func (g *Game) tryMotionInput(m motion) inputResult {
 	return inputMotion
 }
 
-// streq는 두 단어가 앞 5글자까지 같은지 본다. (advent.w 매크로 streq)
-func streq(a, b string) bool {
-	if len(a) > 5 {
-		a = a[:5]
-	}
-	if len(b) > 5 {
-		b = b[:5]
-	}
-	return a == b
-}
+// streq는 두 단어가 같은지 본다. (한글판: 단어 전체 비교)
+func streq(a, b string) bool { return a == b }
 
 // getUserInput은 명령 하나를 읽어 해석한다. 명령이 완성되면 그 종류를
 // 돌려주고, 자질구레한 경우(모르는 단어, 되묻기 등)는 스스로 출력하고
@@ -84,11 +76,11 @@ cycle: // 명령 상태를 유지한 채 다시 입력만 받는다
 		return inputEOF
 	}
 
-	// "enter water/stream" 같은 경우 처리. ("enter"는 어휘상 이동이다)
-	if streq(g.word1, "enter") {
-		if streq(g.word2, "water") || streq(g.word2, "strea") {
+	// "물에 들어가" 같은 경우 처리. ("들어가"는 어휘상 이동이다)
+	if streq(g.word1, "들어가") {
+		if streq(g.word2, "물") || streq(g.word2, "개울") {
 			if g.waterHere() {
-				g.report("Your feet are now wet.")
+				g.report("이제 발이 젖었어.")
 				goto restart
 			}
 			g.report(g.defaultMsg[GO]) // default_to(GO)
@@ -99,18 +91,10 @@ cycle: // 명령 상태를 유지한 채 다시 입력만 받는다
 	}
 
 parse:
-	// 친절한 안내: WEST를 자주 치면 W로 줄여 쓰라고 알려준다.
-	if streq(g.word1, "west") {
-		g.westCount++
-		if g.westCount == 10 {
-			fmt.Fprintf(g.out, " If you prefer, simply type W rather than WEST.\n")
-		}
-	}
-
 	{
 		e, found := g.lookup(g.word1)
 		if !found {
-			fmt.Fprintf(g.out, "Sorry, I don't know the word \"%s\".\n", g.word1)
+			fmt.Fprintf(g.out, "\"%s\" 같은 단어는 모르겠어.\n", g.word1)
 			goto cycle
 		}
 		g.commandType = e.typ
@@ -131,7 +115,7 @@ parse:
 				if (g.verb == FIND || g.verb == INVENTORY) && g.word2 == "" {
 					return inputTransitive
 				}
-				fmt.Fprintf(g.out, "I see no %s here.\n", g.word1)
+				fmt.Fprintf(g.out, "여기 %s 같은 건 안 보여.\n", g.word1)
 				goto restart
 			}
 			// objOK
@@ -141,7 +125,7 @@ parse:
 			if g.verb != ABSTAIN {
 				return inputTransitive
 			}
-			fmt.Fprintf(g.out, "What do you want to do with the %s?\n", g.word1)
+			fmt.Fprintf(g.out, "%s(으)로 뭘 하고 싶어?\n", g.word1)
 			goto cycle
 
 		case actionType:
@@ -213,7 +197,7 @@ func (g *Game) makeObjMeaningful() objResult {
 			return objCantSee
 		}
 		g.knifeLoc = -1
-		g.report("The dwarves' knives vanish as they strike the walls of the cave.")
+		g.report("난쟁이들의 칼이 동굴 벽에 부딪히며 사라져.")
 		return objReport
 	case ROD:
 		if !g.here(ROD2) {

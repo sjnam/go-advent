@@ -45,30 +45,30 @@ func (g *Game) checkLamp() {
 	case g.limit == 0:
 		g.extinguishLamp()
 	case g.limit < 0 && g.loc < minInCave:
-		fmt.Fprintf(g.out, "There's not much point in wandering around out here, and you can't\n"+
-			"explore the cave without a lamp.  So let's just call it a day.\n")
+		fmt.Fprintf(g.out, "여기 밖에서 어슬렁거려 봐야 별 의미 없고, 램프 없이는\n"+
+			"동굴을 탐험할 수도 없어.  그냥 오늘은 여기까지 하자.\n")
 		g.gaveUp = true
 		g.quitting = true
 	case g.limit <= 30 && !g.warned && g.here(LAMP):
-		fmt.Fprintf(g.out, "Your lamp is getting dim")
+		fmt.Fprintf(g.out, "램프가 어두워지고 있어")
 		switch {
 		case g.prop[BATTERIES] == 1:
-			fmt.Fprintf(g.out, ", and you're out of spare batteries.  You'd\n"+
-				"best start wrapping this up.\n")
+			fmt.Fprintf(g.out, ", 게다가 여분 배터리도 없어.  슬슬\n"+
+				"마무리하는 게 좋겠어.\n")
 		case g.place[BATTERIES] == limbo:
-			fmt.Fprintf(g.out, ".  You'd best start wrapping this up, unless\n"+
-				"you can find some fresh batteries.  I seem to recall that there's\n"+
-				"a vending machine in the maze.  Bring some coins with you.\n")
+			fmt.Fprintf(g.out, ".  슬슬 마무리하는 게 좋겠어, 새 배터리를\n"+
+				"찾지 못한다면 말이야.  내 기억에 미로 어딘가에\n"+
+				"자판기가 있었어.  동전을 좀 챙겨 가.\n")
 		default:
-			fmt.Fprintf(g.out, ".  You'd best go back for those batteries.\n")
+			fmt.Fprintf(g.out, ".  그 배터리를 가지러 돌아가는 게 좋겠어.\n")
 		}
 		g.warned = true
 	}
 }
 
 func (g *Game) replaceBatteries() {
-	fmt.Fprintf(g.out, "Your lamp is getting dim.  I'm taking the liberty of replacing\n"+
-		"the batteries.\n")
+	fmt.Fprintf(g.out, "램프가 어두워지고 있어.  내가 알아서 배터리를\n"+
+		"갈아 끼울게.\n")
 	g.prop[BATTERIES] = 1
 	if g.toting(BATTERIES) {
 		g.drop(BATTERIES, g.loc)
@@ -80,15 +80,15 @@ func (g *Game) extinguishLamp() {
 	g.limit = -1
 	g.prop[LAMP] = 0
 	if g.here(LAMP) {
-		fmt.Fprintf(g.out, "Your lamp has run out of power.")
+		fmt.Fprintf(g.out, "램프 전력이 다 떨어졌어.")
 	}
 }
 
 // warnClosing: 첫 경고. 격자문을 잠그고, 수정 다리를 부수고, 난쟁이와
 // 해적을 모두 없애고, 트롤·곰을 치우고 폐쇄를 시작한다. (advent.w "Warn that the cave is closing")
 func (g *Game) warnClosing() {
-	fmt.Fprintf(g.out, "A sepulchral voice, reverberating through the cave, says, \"Cave\n"+
-		"closing soon.  All adventurers exit immediately through main office.\"\n")
+	fmt.Fprintf(g.out, "동굴 전체에 울려 퍼지는 음산한 목소리가 말해.  \"곧 동굴이\n"+
+		"닫힙니다.  모든 모험가는 즉시 본부를 통해 나가십시오.\"\n")
 	g.clock1 = -1
 	g.prop[GRATE] = 0
 	g.prop[CRYSTAL] = 0
@@ -117,15 +117,15 @@ func (g *Game) panicClosing() {
 		g.clock2 = 15
 		g.panicked = true
 	}
-	fmt.Fprintf(g.out, "A mysterious recorded voice groans into life and announces:\n"+
-		"\"This exit is closed.  Please leave via main office.\"\n")
+	fmt.Fprintf(g.out, "수상한 녹음된 목소리가 끼익 살아나며 알려:\n"+
+		"\"이 출구는 닫혔습니다.  본부를 통해 나가 주십시오.\"\n")
 }
 
 // closeCave: clock2가 0이 되면 최종 퍼즐의 보관실로 옮긴다. (advent.w "Close the cave")
 func (g *Game) closeCave() {
-	fmt.Fprintf(g.out, "The sepulchral voice intones, \"The cave is now closed.\"  As the echoes\n"+
-		"fade, there is a blinding flash of light (and a small puff of orange\n"+
-		"smoke). . . .    Then your eyes refocus; you look around and find...\n")
+	fmt.Fprintf(g.out, "음산한 목소리가 읊조려.  \"동굴은 이제 닫혔다.\"  메아리가 잦아들자,\n"+
+		"눈부신 빛이 번쩍이고 (주황색 연기도 작게 한 줄기 피어올라).\n"+
+		". . .    그러다 다시 초점이 잡히고, 둘러보니...\n")
 	g.move(BOTTLE, neend)
 	g.prop[BOTTLE] = -2
 	g.move(PLANT, neend)

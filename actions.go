@@ -50,7 +50,7 @@ func (g *Game) getObjR() actResult {
 	if w != "" {
 		w = strings.ToUpper(w[:1]) + w[1:]
 	}
-	fmt.Fprintf(g.out, "%s what?\n", w)
+	fmt.Fprintf(g.out, "%s 뭘?\n", w)
 	return aNeed()
 }
 
@@ -115,7 +115,7 @@ func (g *Game) doIntransitive() actResult {
 		if g.obj != NOTHING {
 			return aTrans()
 		}
-		return g.rep("There is nothing here with a lock!")
+		return g.rep("여기엔 자물쇠 달린 게 없어!")
 	case READ:
 		if g.dark() {
 			return g.getObjR()
@@ -147,19 +147,19 @@ func (g *Game) doIntransitive() actResult {
 	case BRIEF:
 		g.interval = 10000
 		g.lookCount = 3
-		return g.rep("Okay, from now on I'll only describe a place in full the first time\n" +
-			"you come to it.  To get the full description, say \"LOOK\".")
+		return g.rep("알았어, 이제부터 어떤 장소든 처음 왔을 때만 전부 설명할게.\n" +
+			"전체 설명을 보려면 \"봐\"라고 해.")
 	case SCORE:
-		fmt.Fprintf(g.out, "If you were to quit now, you would score %d\n"+
-			"out of a possible %d.\n", g.score()-4, maxScore)
-		if !g.yes("Do you indeed wish to quit now?", g.ok(), g.ok()) {
+		fmt.Fprintf(g.out, "지금 그만두면 너는 %d점을 얻어.\n"+
+			"만점은 %d점이야.\n", g.score()-4, maxScore)
+		if !g.yes("정말로 지금 그만둘래?", g.ok(), g.ok()) {
 			return aDone()
 		}
 		g.gaveUp = true
 		g.quitting = true
 		return aDone()
 	case QUIT:
-		if !g.yes("Do you really want to quit now?", g.ok(), g.ok()) {
+		if !g.yes("정말 지금 그만두고 싶어?", g.ok(), g.ok()) {
 			return aDone()
 		}
 		g.gaveUp = true
@@ -176,7 +176,7 @@ func (g *Game) doIntransitive() actResult {
 		if g.foobar == 0 {
 			return g.defTo(WAVE) // nada_sucede
 		}
-		return g.rep("What's the matter, can't you read?  Now you'd best start over.")
+		return g.rep("왜 그래, 글도 못 읽어?  이제 처음부터 다시 하는 게 좋겠어.")
 	default:
 		return g.getObjR()
 	}
@@ -211,15 +211,15 @@ func (g *Game) doTransitive() actResult {
 		if g.obj == LAMP {
 			return g.repDefault()
 		}
-		return g.rep("Peculiar.  Nothing unexpected happens.")
+		return g.rep("희한하네.  별다른 일은 안 일어나.")
 	case FIND, INVENTORY:
 		return g.doFind()
 	case BREAK:
 		return g.doBreak()
 	case WAKE:
 		if g.closed && g.obj == DWARF {
-			fmt.Fprintf(g.out, "You prod the nearest dwarf, who wakes up grumpily, takes one look at\n"+
-				"you, curses, and grabs for his axe.\n")
+			fmt.Fprintf(g.out, "넌 가장 가까운 난쟁이를 쿡 찔러.  녀석은 투덜대며 깨어나, 널 한 번\n"+
+				"노려보고는, 욕을 내뱉으며 도끼를 집어 들어.\n")
 			return g.dwarvesUpset()
 		}
 		return g.repDefault()
@@ -245,16 +245,16 @@ func (g *Game) doInventory() actResult {
 		if g.toting(t) && (objBase[t] == NOTHING || objBase[t] == t) && t != BEAR {
 			if !found {
 				found = true
-				fmt.Fprintf(g.out, "You are currently holding the following:\n")
+				fmt.Fprintf(g.out, "지금 들고 있는 건 이래:\n")
 			}
 			fmt.Fprintf(g.out, " %s\n", objName[t])
 		}
 	}
 	if g.toting(BEAR) {
-		return g.rep("You are being followed by a very large, tame bear.")
+		return g.rep("아주 크고 온순한 곰이 널 따라오고 있어.")
 	}
 	if !found {
-		return g.rep("You're not carrying anything.")
+		return g.rep("넌 아무것도 들고 있지 않아.")
 	}
 	return aDone()
 }
@@ -287,9 +287,9 @@ func (g *Game) doEat() actResult {
 	switch g.obj {
 	case FOOD:
 		g.destroy(FOOD)
-		return g.rep("Thank you, it was delicious!")
+		return g.rep("고마워, 맛있었어!")
 	case BIRD, SNAKE, CLAM, OYSTER, DWARF, DRAGON, TROLL, BEAR:
-		return g.rep("I think I just lost my appetite.")
+		return g.rep("갑자기 입맛이 뚝 떨어졌어.")
 	default:
 		return g.repDefault()
 	}
@@ -330,13 +330,13 @@ func (g *Game) doFind() actResult {
 		return g.defTo(TAKE)
 	}
 	if g.closed {
-		return g.rep("I daresay whatever you want is around here somewhere.")
+		return g.rep("네가 뭘 찾든 이 근처 어딘가에 있을 거야.")
 	}
 	objectInBottle := (g.obj == WATER && g.prop[BOTTLE] == 0) || (g.obj == OIL && g.prop[BOTTLE] == 2)
 	if g.isAtLoc(g.obj) || (objectInBottle && g.place[BOTTLE] == g.loc) ||
 		(g.obj == WATER && g.waterHere()) || (g.obj == OIL && g.oilHere()) ||
 		(g.obj == DWARF && g.dwarf()) {
-		return g.rep("I believe what you want is right here with you.")
+		return g.rep("네가 찾는 건 바로 여기 너랑 같이 있는 것 같은데.")
 	}
 	return g.repDefault()
 }
@@ -347,18 +347,18 @@ func (g *Game) doBreak() actResult {
 		if g.toting(VASE) {
 			g.drop(VASE, g.loc)
 		}
-		fmt.Fprintf(g.out, "You have taken the vase and hurled it delicately to the ground.\n")
+		fmt.Fprintf(g.out, "넌 꽃병을 들어 바닥에 섬세하게 내동댕이쳤어.\n")
 		return g.smashVase()
 	}
 	if g.obj != MIRROR {
 		return g.repDefault()
 	}
 	if g.closed {
-		fmt.Fprintf(g.out, "You strike the mirror a resounding blow, whereupon it shatters into a\n"+
-			"myriad tiny fragments.")
+		fmt.Fprintf(g.out, "넌 거울을 쾅 후려쳐, 그러자 거울이 산산이\n"+
+			"수많은 작은 조각으로 부서져.")
 		return g.dwarvesUpset()
 	}
-	return g.rep("It is too far up for you to reach.")
+	return g.rep("너무 높이 있어서 닿을 수가 없어.")
 }
 
 // smashVase는 꽃병을 깨뜨려 못 쓰게 만든다. (advent.w smash)
@@ -374,10 +374,10 @@ func (g *Game) doLampOn() actResult {
 		return g.repDefault()
 	}
 	if g.limit < 0 {
-		return g.rep("Your lamp has run out of power.")
+		return g.rep("램프 전력이 다 떨어졌어.")
 	}
 	g.prop[LAMP] = 1
-	fmt.Fprintf(g.out, "Your lamp is now on.\n")
+	fmt.Fprintf(g.out, "이제 램프가 켜졌어.\n")
 	if g.wasDark {
 		return actResult{kind: paCommence}
 	}
@@ -389,7 +389,7 @@ func (g *Game) doLampOff() actResult {
 		return g.repDefault()
 	}
 	g.prop[LAMP] = 0
-	fmt.Fprintf(g.out, "Your lamp is now off.\n")
+	fmt.Fprintf(g.out, "이제 램프가 꺼졌어.\n")
 	if g.dark() {
 		fmt.Fprintf(g.out, "%s\n", pitchDarkMsg)
 	}
