@@ -215,6 +215,10 @@ const (
 	INVENTORY
 	SCORE
 	QUIT
+	// 원작에는 없는, 이 포팅에서 추가한 동사. (저장/불러오기)
+	// 원작 동사 값(0~QUIT)은 그대로 두어 데이터 호환을 유지한다.
+	SAVE
+	RESTORE
 )
 
 // ---- 장소 (advent.w "Cave data") ----

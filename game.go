@@ -19,7 +19,7 @@ type Game struct {
 
 	// 어휘 (vocab.go 참고)
 	words      map[string]vocabEntry // 우리가 아는 단어들
-	defaultMsg [30]string            // 동작이 특별 조건을 못 채웠을 때의 기본 메시지(action별)
+	defaultMsg [32]string            // 동작이 특별 조건을 못 채웠을 때의 기본 메시지(action별)
 	message    [13]string            // help, info 등 고정 메시지
 
 	// 동굴 상태 (cave.go / cavedata.go 참고)

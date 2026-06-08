@@ -311,6 +311,9 @@ func (g *Game) buildVocabulary() {
 	aw("종료", QUIT)
 	aw("끝내", QUIT)
 	g.defaultMsg[QUIT] = g.defaultMsg[SCORE]
+	aw("저장", SAVE)
+	aw("불러오기", RESTORE)
+	aw("복원", RESTORE)
 
 	// ---- 메시지 단어 (도움말, 정보 등) ----
 	g.buildMessageWords()

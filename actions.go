@@ -165,6 +165,17 @@ func (g *Game) doIntransitive() actResult {
 		g.gaveUp = true
 		g.quitting = true
 		return aDone()
+	case SAVE:
+		if err := g.save(saveFile); err != nil {
+			return g.rep("저장하지 못했어.")
+		}
+		return g.rep("게임을 저장했어.")
+	case RESTORE:
+		if err := g.load(saveFile); err != nil {
+			return g.rep("불러올 저장 파일이 없어.")
+		}
+		g.report("게임을 불러왔어.")
+		return actResult{kind: paCommence} // 복원된 자리에서 다시 묘사
 	case FEEFIE:
 		k := 0
 		for !streq(g.word1, incantation[k]) {
