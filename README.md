@@ -1,5 +1,9 @@
 # go-advent (한글판)
 
+This is a fully Korean-localized version of *Colossal Cave Adventure*, which Donald Knuth ported from CWEB to Go.
+The original game was *Adventure 1.0*, a FORTRAN game created by Will Crowther (1975–76) and
+significantly expanded by Don Woods (1977), which Knuth rewrote in CWEB in 1998.
+
 Donald Knuth가 CWEB으로 쓴 **Colossal Cave Adventure**를 Go로 옮긴 뒤,
 **한국어로 완전 한글화**한 것입니다. 원작은 Will Crowther(1975–76)가 만들고
 Don Woods(1977)가 크게 확장한 FORTRAN 게임 *Adventure 1.0*이며, Knuth가
