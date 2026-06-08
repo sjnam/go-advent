@@ -5,7 +5,7 @@ package main
 
 var objName = map[object]string{
 	KEYS:      "열쇠 꾸러미",
-	LAMP:      "놋쇠 등불",
+	LAMP:      "놋쇠 램프",
 	CAGE:      "버들 새장",
 	ROD:       "검은 막대",
 	ROD2:      "검은 막대",
