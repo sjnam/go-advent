@@ -9,8 +9,10 @@ const pitchDarkMsg = "이제 칠흑같이 어두워.  계속 가면 십중팔구
 var incantation = [...]string{"fee", "fie", "foe", "foo", "fum"}
 
 // 난쟁이 칼 공격 결과 메시지 (advent.w:3860)
-var attackMsg = [...]string{"빗나갔어", "맞았어",
-	"아무도 못 맞혔어", "하나가 맞혔어"}
+var attackMsg = [...]string{
+	"빗나갔어", "맞았어",
+	"아무도 못 맞혔어", "하나가 맞혔어",
+}
 
 const nHints = 8
 
