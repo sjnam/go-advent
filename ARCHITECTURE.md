@@ -170,7 +170,7 @@ listen()            한 줄 읽어 word1/word2 (vocab.go)
    │
 getUserInput()      (parse.go)
    │  lookup(word1) → 단어의 종류 판정
-   ├─ 이동 단어        → inputMotion ─────────────┐
+   ├─ 이동 단어        → inputMotion  ─────────────┐
    ├─ 객체 단어        → makeObjMeaningful()       │
    │                     (여기 없는 것/사실은 이동 처리)
    ├─ 동작 단어        → inputTransitive/Intransitive
