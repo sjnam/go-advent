@@ -322,13 +322,15 @@ func (g *Game) doWave() actResult {
 // doBlast는 폭파 시도다. 폐쇄 후 다이너마이트가 있어야 의미가 있다. (advent.w BLAST)
 func (g *Game) doBlast() actResult {
 	if g.closed && g.prop[ROD2] >= 0 {
-		bonus := 45
+		// 원작의 전역 bonus처럼 g.bonus에 담아야 score()의 s+=g.bonus에
+		// 반영된다. 막대에서 멀수록 결말이 좋다(25 자폭 < 30 < 45 승리).
+		g.bonus = 45
 		if g.here(ROD2) {
-			bonus = 25
+			g.bonus = 25
 		} else if g.loc == neend {
-			bonus = 30
+			g.bonus = 30
 		}
-		fmt.Fprintf(g.out, "%s\n", g.message[bonus/5])
+		fmt.Fprintf(g.out, "%s\n", g.message[g.bonus/5])
 		g.quitting = true
 		return aDone()
 	}
