@@ -1,0 +1,12 @@
+# Compiled binary
+/go-advent
+
+# Go build/test artifacts
+*.test
+*.out
+
+# 원작 CWEB 소스 (© Woods & Knuth, all rights reserved) — 저장소에 포함하지 않음
+advent.w
+
+# 게임 저장 파일
+advent.save
