@@ -32,14 +32,14 @@ func (g *Game) doKill() actResult {
 		if g.closed {
 			return g.dwarvesUpset()
 		}
-		return g.rep("뭘로?  맨손으로?")
+		return g.rep("뭘로? 맨손으로?")
 	case TROLL:
 		return g.rep("트롤은 바위와 가까운 친척이라 살갗이\n" +
 			"코뿔소 가죽처럼 질겨. 트롤은 네 공격을 가뿐히 막아내.")
 	case BEAR:
 		switch g.prop[BEAR] {
 		case 0:
-			return g.rep("뭘로?  맨손으로?  녀석의 곰 같은 손을 상대로?")
+			return g.rep("뭘로? 맨손으로? 녀석의 곰 같은 손을 상대로?")
 		case 3:
 			return g.rep("맙소사, 그 불쌍한 녀석은 이미 죽었어!")
 		default:
@@ -117,7 +117,7 @@ return g.rep("작은 새가 죽었어. 사체가 사라져.")
 된다.
 
 @<용과 재미있는 일을 벌인다@>=
-fmt.Fprintf(g.out, "뭘로?  맨손으로?\n")
+fmt.Fprintf(g.out, "뭘로? 맨손으로?\n")
 g.verb = ABSTAIN
 g.obj = NOTHING
 if !g.listen() {
@@ -189,7 +189,7 @@ func (g *Game) doFeed() actResult {
 			return g.repDefault()
 		}
 		g.dflag++
-		return g.rep("이 바보야, 난쟁이는 석탄만 먹어!  이제 녀석을 제대로 화나게 했어!")
+		return g.rep("이 바보야, 난쟁이는 석탄만 먹어! 이제 녀석을 제대로 화나게 했어!")
 	default:
 		return g.rep(g.defaultMsg[CALM])
 	}
