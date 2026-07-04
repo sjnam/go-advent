@@ -8,6 +8,7 @@
 #
 # 매크로(gwebmac.tex, kotexgweb.tex)는 설치된 texmf 트리에서 자동으로 찾는다.
 
+GO      ?= go
 GTANGLE ?= gtangle
 GWEAVE  ?= gweave
 
@@ -15,10 +16,13 @@ WSRC := advent.w types.w vocab.w cave.w objects.w game.w parse.w motion.w \
         actions.w liquid.w verbs.w rand.w dwarf.w closing.w death.w \
         score.w save.w launch.w
 
-.PHONY: all tangle doc test clean
+.PHONY: all build tangle doc test clean
 .DEFAULT_GOAL := all
 
-all: tangle doc
+all: build doc
+
+build: advent.go
+	$(GO) build -o advent ./...
 
 tangle: advent.go
 
