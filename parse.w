@@ -122,7 +122,7 @@ if g.verb == SAY {
 	if g.word2 != "" {
 		g.verb = ABSTAIN
 	} else {
-		return inputTransitive // 말해 <word1>
+		return inputTransitive // 말해 $\langle$word1$\rangle$
 	}
 }
 if g.checkClocks() { // 동굴이 닫히면 제자리로

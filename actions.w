@@ -30,7 +30,9 @@ func aChange(v action) actResult { return actResult{changeTo: v} }
 @ 자주 쓰는 결과 도우미들. |rep|은 말하고 끝, |defTo|는 남의 기본
 메시지를 빌려 말하고 끝, |tryMotionR|은 이동으로 전환, |stayPut|은
 제자리 재묘사(NOWHERE 이동)다. |getObjR|은 ``$\langle$동사$\rangle$
-뭘?''이라고 되물으며 객체 재입력을 청한다.
+뭘?''이라고 되물으며 객체 재입력을 청한다 --- 원작은 여기서 동사의
+첫 글자를 대문자로 바꿔 ``Take what?''을 만들었지만, 대소문자가 없는
+한글에는 부질없는 격식이라 그대로 되묻는다.
 
 @<동작@>=
 func (g *Game) rep(m string) actResult        { g.report(m); return aDone() }
@@ -46,11 +48,7 @@ func (g *Game) repDefault() actResult {
 }
 
 func (g *Game) getObjR() actResult {
-	w := g.word1
-	if w != "" {
-		w = strings.ToUpper(w[:1]) + w[1:]
-	}
-	fmt.Fprintf(g.out, "%s 뭘?\n", w)
+	fmt.Fprintf(g.out, "%s 뭘?\n", g.word1)
 	return aNeed()
 }
 
@@ -238,14 +236,14 @@ func (g *Game) doTransitive() actResult {
 		if g.obj == LAMP {
 			return g.repDefault()
 		}
-		return g.rep("희한하네.  별다른 일은 안 일어나.")
+		return g.rep("희한하네. 별다른 일은 안 일어나.")
 	case FIND, INVENTORY:
 		return g.doFind()
 	case BREAK:
 		return g.doBreak()
 	case WAKE:
 		if g.closed && g.obj == DWARF {
-			fmt.Fprintf(g.out, "넌 가장 가까운 난쟁이를 쿡 찔러.  녀석은 투덜대며 깨어나, 널 한 번\n"+
+			fmt.Fprintf(g.out, "넌 가장 가까운 난쟁이를 쿡 찔러. 녀석은 투덜대며 깨어나, 널 한 번\n"+
 				"노려보고는, 욕을 내뱉으며 도끼를 집어 들어.\n")
 			return g.dwarvesUpset()
 		}

@@ -25,7 +25,7 @@ func (g *Game) handleSpecialMotion() smResult {
 	case LOOK:
 		if g.lookCount < 3 {
 			g.lookCount++
-			fmt.Fprintf(g.out, "미안하지만 더 자세히는 알려줄 수 없어.  네 위치의 긴 설명을\n"+
+			fmt.Fprintf(g.out, "미안하지만 더 자세히는 알려줄 수 없어. 네 위치의 긴 설명을\n"+
 				"다시 보여줄게.\n")
 		}
 		g.wasDark = false
@@ -34,7 +34,7 @@ func (g *Game) handleSpecialMotion() smResult {
 	case CAVE:
 		if g.loc < minInCave {
 			fmt.Fprintf(g.out, "동굴이 어디 있는지 안 보이지만, 이 근처에선 어떤 시내도 지표면을\n"+
-				"오래 흐르지 못해.  나라면 시내를 따라가 보겠어.\n")
+				"오래 흐르지 못해. 나라면 시내를 따라가 보겠어.\n")
 		} else {
 			fmt.Fprintf(g.out, "그걸 하려면 더 자세한 지시가 필요해.\n")
 		}
@@ -189,10 +189,10 @@ case g.verb == FIND || g.verb == INVENTORY:
 case g.mot <= FORWARD:
 	switch g.mot {
 	case IN, OUT:
-		fmt.Fprintf(g.out, "여기선 안과 밖을 모르겠어.  나침반 방향을 쓰거나 가려는 쪽에\n"+
+		fmt.Fprintf(g.out, "여기선 안과 밖을 모르겠어. 나침반 방향을 쓰거나 가려는 쪽에\n"+
 			"있는 걸 말해 줘.")
 	case FORWARD, L, R:
-		fmt.Fprintf(g.out, "네가 어느 쪽을 보고 있는지 모르겠어.  나침반 방향이나 가까운 물건으로 말해 줘.")
+		fmt.Fprintf(g.out, "네가 어느 쪽을 보고 있는지 모르겠어. 나침반 방향이나 가까운 물건으로 말해 줘.")
 	default:
 		fmt.Fprintf(g.out, "그 방향으로는 갈 수 없어.")
 	}
@@ -244,7 +244,7 @@ if !g.toting(BEAR) {
 	return
 }
 fmt.Fprintf(g.out, "막 건너편에 닿는 순간, 여태 널 따라다니던 곰의 무게에\n"+
-	"다리가 휘청해.  넌 필사적으로 붙잡을 곳을\n"+
+	"다리가 휘청해. 넌 필사적으로 붙잡을 곳을\n"+
 	"더듬지만, 다리가 무너지면서 뒤로\n"+
 	"휘청이다 협곡으로 떨어져.\n")
 g.prop[BRIDGE] = 1

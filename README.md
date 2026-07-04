@@ -17,7 +17,7 @@ Don Woods(1977)가 크게 확장한 FORTRAN 게임 *Adventure 1.0*이며, Knuth�
 $ go run .
 어드벤처에 온 걸 환영해!!  설명을 들어볼래?
 ** 아니
-넌 작은 벽돌 건물 앞, 길 끝에 서 있어.  주위는 온통 숲이야.  건물에서
+넌 작은 벽돌 건물 앞, 길 끝에 서 있어. 주위는 온통 숲이야. 건물에서
 작은 시냇물이 흘러나와 도랑을 따라 내려가.
 * _
 ```
@@ -32,7 +32,7 @@ $ go run .
 
 ```sh
 make tangle            # advent.w -> advent.go, advent_test.go
-go build -o advent .   # 빌드
+go build -o advent .  # 빌드
 ./advent               # 플레이 (매번 다른 모험 — 현재 시각을 난수 시드로)
 
 make doc               # advent.pdf 조판 (gweave + luatex)

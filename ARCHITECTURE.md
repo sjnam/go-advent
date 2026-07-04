@@ -68,7 +68,7 @@
 
 ```sh
 printf '아니\n안\n가져가 램프\n켜\n그만\n예\n' | go run . --seed=42
-go test ./...     # golden(시드 42, C 원본과 byte-identical) + 단위 테스트
+go test ./...    # golden(시드 42, C 원본과 byte-identical) + 단위 테스트
 ```
 
 `.w`를 고쳤다면 `make tangle`(또는 `make test`)이 `advent.go`를 다시

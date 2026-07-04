@@ -20,3 +20,6 @@ advent.log
 advent.toc
 advent.idx
 advent.scn
+
+# 빌드 바이너리 (README의 go build -o advent .)
+/advent

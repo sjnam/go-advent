@@ -45,8 +45,8 @@ func (g *Game) checkClocks() bool {
 지키지 않으니.
 
 @<폐쇄가 임박했다고 경고한다@>=
-fmt.Fprintf(g.out, "동굴 전체에 울려 퍼지는 음산한 목소리가 말해.  \"곧 동굴이\n"+
-	"닫힙니다.  모든 모험가는 즉시 본부를 통해 나가십시오.\"\n")
+fmt.Fprintf(g.out, "동굴 전체에 울려 퍼지는 음산한 목소리가 말해. \"곧 동굴이\n"+
+	"닫힙니다. 모든 모험가는 즉시 본부를 통해 나가십시오.\"\n")
 g.clock1 = -1
 g.prop[GRATE] = 0
 g.prop[CRYSTAL] = 0
@@ -79,7 +79,7 @@ func (g *Game) panicClosing() {
 		g.panicked = true
 	}
 	fmt.Fprintf(g.out, "수상한 녹음된 목소리가 끼익 살아나며 알려:\n"+
-		"\"이 출구는 닫혔습니다.  본부를 통해 나가 주십시오.\"\n")
+		"\"이 출구는 닫혔습니다. 본부를 통해 나가 주십시오.\"\n")
 }
 
 @ 마침내 동굴이 닫히면, 너는 번쩍이는 빛(과 작은 주황색 연기 한 줄기)
@@ -90,9 +90,9 @@ func (g *Game) panicClosing() {
 것이 동굴의 법이지만, 퇴장 보너스 10점은 챙겨 준다.
 
 @<동굴을 닫는다@>=
-fmt.Fprintf(g.out, "음산한 목소리가 읊조려.  \"동굴은 이제 닫혔다.\"  메아리가 잦아들자,\n"+
+fmt.Fprintf(g.out, "음산한 목소리가 읊조려. \"동굴은 이제 닫혔다.\"  메아리가 잦아들자,\n"+
 	"눈부신 빛이 번쩍이고 (주황색 연기도 작게 한 줄기 피어올라).\n"+
-	". . .    그러다 다시 초점이 잡히고, 둘러보니...\n")
+	". . .   그러다 다시 초점이 잡히고, 둘러보니...\n")
 g.move(BOTTLE, neend)
 g.prop[BOTTLE] = -2
 g.move(PLANT, neend)
@@ -142,7 +142,7 @@ if g.prop[LAMP] == 1 {
 }
 switch {
 case g.limit <= 30 && g.here(BATTERIES) && g.prop[BATTERIES] == 0 && g.here(LAMP):
-	fmt.Fprintf(g.out, "램프가 어두워지고 있어.  내가 알아서 배터리를\n"+
+	fmt.Fprintf(g.out, "램프가 어두워지고 있어. 내가 알아서 배터리를\n"+
 		"갈아 끼울게.\n")
 	g.prop[BATTERIES] = 1
 	if g.toting(BATTERIES) {
@@ -157,21 +157,21 @@ case g.limit == 0:
 	}
 case g.limit < 0 && g.loc < minInCave:
 	fmt.Fprintf(g.out, "여기 밖에서 어슬렁거려 봐야 별 의미 없고, 램프 없이는\n"+
-		"동굴을 탐험할 수도 없어.  그냥 오늘은 여기까지 하자.\n")
+		"동굴을 탐험할 수도 없어. 그냥 오늘은 여기까지 하자.\n")
 	g.gaveUp = true
 	g.quitting = true
 case g.limit <= 30 && !g.warned && g.here(LAMP):
 	fmt.Fprintf(g.out, "램프가 어두워지고 있어")
 	switch {
 	case g.prop[BATTERIES] == 1:
-		fmt.Fprintf(g.out, ", 게다가 여분 배터리도 없어.  슬슬\n"+
+		fmt.Fprintf(g.out, ", 게다가 여분 배터리도 없어. 슬슬\n"+
 			"마무리하는 게 좋겠어.\n")
 	case g.place[BATTERIES] == limbo:
-		fmt.Fprintf(g.out, ".  슬슬 마무리하는 게 좋겠어, 새 배터리를\n"+
-			"찾지 못한다면 말이야.  내 기억에 미로 어딘가에\n"+
-			"자판기가 있었어.  동전을 좀 챙겨 가.\n")
+		fmt.Fprintf(g.out, ". 슬슬 마무리하는 게 좋겠어, 새 배터리를\n"+
+			"찾지 못한다면 말이야. 내 기억에 미로 어딘가에\n"+
+			"자판기가 있었어. 동전을 좀 챙겨 가.\n")
 	default:
-		fmt.Fprintf(g.out, ".  그 배터리를 가지러 돌아가는 게 좋겠어.\n")
+		fmt.Fprintf(g.out, ". 그 배터리를 가지러 돌아가는 게 좋겠어.\n")
 	}
 	g.warned = true
 }

@@ -78,7 +78,7 @@ func (g *Game) doPour() actResult {
 
 @<식물에 물을 준다@>=
 if g.obj != WATER {
-	return g.rep("식물이 발끈해서 잎의 기름을 털어내며 묻네.  \"물은?\"")
+	return g.rep("식물이 발끈해서 잎의 기름을 털어내며 묻네. \"물은?\"")
 }
 fmt.Fprintf(g.out, "%s\n", objNote[g.prop[PLANT]+1+objOffset[PLANT]])
 g.prop[PLANT] += 2
@@ -183,7 +183,7 @@ func (g *Game) doTake() actResult {
 		}
 	}
 	if g.holding >= 7 {
-		return g.rep("더는 못 들어.  먼저 뭔가 내려놔야 해.")
+		return g.rep("더는 못 들어. 먼저 뭔가 내려놔야 해.")
 	}
 	if g.obj == BIRD && g.prop[BIRD] == 0 {
 		if r, done := g.takeBird(); done {
@@ -317,7 +317,7 @@ func (g *Game) dropBird(k *bool) (actResult, bool) {
 			g.lostTreasures++
 		}
 		return g.rep("작은 새가 초록 용을 공격해, 놀랍도록 격렬하게 퍼덕이다가\n" +
-			"잿더미가 되도록 타 버려.  재가 바람에 흩날려 가."), true
+			"잿더미가 되도록 타 버려. 재가 바람에 흩날려 가."), true
 	}
 	return actResult{}, false
 }
@@ -342,7 +342,7 @@ if g.prop[VASE] != 0 {
 
 @<곰으로 트롤을 쫓는다@>=
 fmt.Fprintf(g.out, "곰이 트롤 쪽으로 어슬렁어슬렁 다가가자, 트롤은 깜짝 놀라 비명을\n"+
-	"지르며 잽싸게 달아나.  곰은 곧 추격을 포기하고 어슬렁어슬렁 돌아와.\n")
+	"지르며 잽싸게 달아나. 곰은 곧 추격을 포기하고 어슬렁어슬렁 돌아와.\n")
 k = true
 g.destroy(TROLL)
 g.destroy(TROLL_)
@@ -398,7 +398,7 @@ func (g *Game) doToss() actResult {
 		fmt.Fprintf(g.out, "도끼가 용의 두꺼운 비늘에 맞고 힘없이 튕겨 나가.\n")
 	} else if g.isAtLoc(TROLL) {
 		fmt.Fprintf(g.out, "트롤이 도끼를 날렵하게 받아 꼼꼼히 살펴보더니, 다시 던지며\n"+
-			"이렇게 말해.  \"솜씨는 좋군, 한데 값어치가 영 모자라.\"\n")
+			"이렇게 말해. \"솜씨는 좋군, 한데 값어치가 영 모자라.\"\n")
 	} else if g.here(BEAR) && g.prop[BEAR] == 0 {
 		@<도끼를 곰에게 던진다@>@;
 	} else {

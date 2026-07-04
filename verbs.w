@@ -35,7 +35,7 @@ func (g *Game) doKill() actResult {
 		return g.rep("뭘로?  맨손으로?")
 	case TROLL:
 		return g.rep("트롤은 바위와 가까운 친척이라 살갗이\n" +
-			"코뿔소 가죽처럼 질겨.  트롤은 네 공격을 가뿐히 막아내.")
+			"코뿔소 가죽처럼 질겨. 트롤은 네 공격을 가뿐히 막아내.")
 	case BEAR:
 		switch g.prop[BEAR] {
 		case 0:
@@ -43,7 +43,7 @@ func (g *Game) doKill() actResult {
 		case 3:
 			return g.rep("맙소사, 그 불쌍한 녀석은 이미 죽었어!")
 		default:
-			return g.rep("곰이 어리둥절해해.  그냥 네 친구가 되고 싶을 뿐이야.")
+			return g.rep("곰이 어리둥절해해. 그냥 네 친구가 되고 싶을 뿐이야.")
 		}
 	default:
 		return g.repDefault()
@@ -107,7 +107,7 @@ g.prop[BIRD] = 0
 if g.place[SNAKE] == hmk {
 	g.lostTreasures++
 }
-return g.rep("작은 새가 죽었어.  사체가 사라져.")
+return g.rep("작은 새가 죽었어. 사체가 사라져.")
 
 @ 원작이 ``Fun stuff for dragon''이라 이름 붙인 절. 용을 공격하겠다면
 게임은 능청스럽게 묻는다 --- ``뭘로? 맨손으로?'' 그런데 여기에
@@ -153,10 +153,10 @@ return g.stayPut()
 func (g *Game) doFeed() actResult {
 	switch g.obj {
 	case BIRD:
-		return g.rep("배가 안 고파 (그냥 피오르를 그리워하는 것뿐이야).  게다가 넌\n" +
+		return g.rep("배가 안 고파 (그냥 피오르를 그리워하는 것뿐이야). 게다가 넌\n" +
 			"새 모이도 없잖아.")
 	case TROLL:
-		return g.rep("탐식은 트롤의 악덕이 아니야.  하지만 탐욕은 맞지.")
+		return g.rep("탐식은 트롤의 악덕이 아니야. 하지만 탐욕은 맞지.")
 	case DRAGON:
 		if g.prop[DRAGON] != 0 {
 			return g.rep(g.defaultMsg[EAT])
@@ -314,7 +314,7 @@ if !g.toting(TRIDENT) {
 	return g.rep(".")
 }
 if g.toting(g.obj) {
-	fmt.Fprintf(g.out, "%s을 열기 전에 내려놓는 게 좋겠어.  ", name)
+	fmt.Fprintf(g.out, "%s을 열기 전에 내려놓는 게 좋겠어. ", name)
 	if g.obj == CLAM {
 		return g.rep(">끙!<")
 	}
@@ -324,8 +324,8 @@ if g.obj == CLAM {
 	g.destroy(CLAM)
 	g.drop(OYSTER, g.loc)
 	g.drop(PEARL, sac)
-	return g.rep("반짝이는 진주가 대합에서 굴러 나와 떼구루루 굴러가.  세상에,\n" +
-		"이거 진짜 굴이었나 봐.  (난 조개 종류를 구분하는 데\n" +
+	return g.rep("반짝이는 진주가 대합에서 굴러 나와 떼구루루 굴러가. 세상에,\n" +
+		"이거 진짜 굴이었나 봐. (난 조개 종류를 구분하는 데\n" +
 		"영 소질이 없었어.)  뭐가 됐든, 이제 다시 딱 닫혀 버렸어.")
 }
 return g.rep("굴이 삐걱 열리는데, 안에는 굴 말고 아무것도 없어.\n" +
