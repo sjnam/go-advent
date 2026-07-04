@@ -1,5 +1,5 @@
-% 조판 힌트(@s 타입 등록, @d 상수의 타자체 등록)는 types.w에 모아 둔다.
-@i types.w
+@s Reader int
+@s Writer int
 
 \input kotexgweb.tex
 \raggedbottom % 데이터 표가 쪽 중간에서 나뉘어도 밑단을 억지로 채우지 않는다

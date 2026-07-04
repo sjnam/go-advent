@@ -12,7 +12,7 @@ GO      ?= go
 GTANGLE ?= gtangle
 GWEAVE  ?= gweave
 
-WSRC := advent.w types.w vocab.w cave.w objects.w game.w parse.w motion.w \
+WSRC := advent.w vocab.w cave.w objects.w game.w parse.w motion.w \
         actions.w liquid.w verbs.w rand.w dwarf.w closing.w death.w \
         score.w save.w launch.w
 
