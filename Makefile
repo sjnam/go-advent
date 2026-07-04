@@ -1,4 +1,4 @@
-# 콜로설 동굴 어드벤처 문학적 프로그램 빌드용 Makefile.
+# 거대 동굴 탐험 문학적 프로그램 빌드용 Makefile.
 #
 #   make            # tangle + 문서 조판
 #   make tangle     # advent.w -> advent.go, advent_test.go
