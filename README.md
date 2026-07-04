@@ -24,14 +24,19 @@ $ go run .
 
 ## 빌드와 실행
 
-Go 1.26 이상이 필요합니다.
+이 프로그램은 Knuth의 원작처럼 **문학적 프로그램**(한글 GWEB)으로
+작성되어 있습니다. 소스는 `advent.w`와 장별 `.w` 파일들뿐이고, Go 코드
+(`advent.go`, `advent_test.go`)와 문서(`advent.pdf`)는 거기서
+생성합니다 — 저장소에는 두지 않습니다. Go 1.26 이상과
+[GWEB](https://github.com/sjnam/gweb)(`gtangle`/`gweave`)이 필요합니다.
 
 ```sh
+make tangle            # advent.w -> advent.go, advent_test.go
 go build -o advent .   # 빌드
 ./advent               # 플레이 (매번 다른 모험 — 현재 시각을 난수 시드로)
 
-# 또는 곧장 실행
-go run .
+make doc               # advent.pdf 조판 (gweave + luatex)
+make test              # go test ./...
 ```
 
 `--seed` 플래그로 난수를 고정할 수 있습니다(테스트·비교용). 시드를 고정하면
@@ -80,25 +85,18 @@ go run . --seed=42
 - 제어 흐름은 명시적 값으로: `simulate()`/`minorCycle()`,
   파서의 `inputResult`, 동작의 `actResult`
 
-코드를 직접 읽으며 이해하려면 [코드 읽기 안내(ARCHITECTURE.md)](ARCHITECTURE.md)를
-참고하세요 — 파일 지도, 읽는 순서, 두 겹 순환과 제어 흐름, 원작 대응표가
-정리돼 있습니다.
+코드를 제대로 읽는 길은 문학적 프로그램 그 자체입니다 — `make doc`으로
+조판한 **`advent.pdf`**가 들어가며부터 찾아보기까지 이야기로 안내합니다.
+장 구성과 원작 대응의 요약은 [ARCHITECTURE.md](ARCHITECTURE.md)에도
+있습니다.
 
 ### 텍스트와 구조의 분리
 
 방대한 동굴 데이터(이동 명령 740개, 장소 144곳, 객체 67개)는 검증된 C 원본을
-실행해 덤프한 **구조**(`cavedata.go`, `objdata.go` — 생성 파일)와, 사람이
-관리하는 **한글 텍스트**로 나뉩니다.
-
-| 파일 | 내용 |
-| --- | --- |
-| `cave_text.go` | 장소 설명·짧은 설명·remark (한글) |
-| `obj_text.go` | 객체 이름·묘사 (한글) |
-| `messages.go` | 환영/안내문·힌트·고정 메시지 (한글) |
-| `vocab.go` | 한글 명령어 사전 + 기본 메시지 |
-| `cavedata.go` `objdata.go` | 동굴/객체 **구조** (생성 파일, 손대지 않음) |
-
-이 덕에 동굴 구조의 정확성은 생성으로 보장하면서, 번역은 텍스트 파일에서만
+실행해 덤프한 **구조**(`cavedata.go`, `objdata.go` — 생성 파일)와, `.w`
+문서 안에서 사람이 관리하는 **한글 텍스트**(장소 설명은 동굴 장, 객체
+묘사는 객체 장, 힌트는 게임 진행 장)로 나뉩니다. 이 덕에 동굴 구조의
+정확성은 생성으로 보장하면서, 번역은 문학적 프로그램 본문에서만
 이뤄집니다.
 
 ### 한글 파서

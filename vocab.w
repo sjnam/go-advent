@@ -1,27 +1,58 @@
-package main
+@* 어휘.
+이 문서의 나머지에서 ``너''는 모험가이고 ``나''는 게임이다 --- 원작의
+서문이 그렇게 약속했고, 게임의 말투도 그렇다. 나는 네가 치는 한두 단어의
+명령으로 움직이는데, 내가 아는 단어는 네 종류다. {\it 이동} 단어는 너를
+다른 곳으로 옮기고(\.{북}, \.{하류}, \.{들어가}), {\it 사물} 단어는
+동굴의 물건을 가리키고(\.{램프}, \.{새}, \.{금괴}), {\it 동작} 단어는
+그 물건으로 뭔가를 하고(\.{가져가}, \.{열어}, \.{던져}), {\it 메시지}
+단어는 그저 정해진 대꾸를 듣는다(\.{도움말}, \.{젠장}). 단어 하나는
+종류와 뜻(각 enum의 정수값)의 쌍으로 요약된다.
 
-import (
-	"fmt"
-	"strings"
+@<어휘@>=
+type wordtype int
+
+const (
+	noType wordtype = iota
+	motionType
+	objectType
+	actionType
+	messageType
 )
-
-// 우리가 아는 단어들. 한글판에서는 명령어를 한국어로 등록한다.
-// 마법 주문(xyzzy, plugh, plover, fee-fie-foe-foo)만 영어로 둔다.
 
 type vocabEntry struct {
 	typ     wordtype // 단어의 종류
 	meaning int      // motion/object/action 값, 또는 message 인덱스
 }
 
-// lookup은 단어를 찾는다. 한글판은 단어 전체로 매칭한다(원본의 앞 5글자
-// 절단은 한글 UTF-8에서 글자를 깨뜨리므로 쓰지 않는다).
+@ 원작은 단어를 앞 다섯 글자만 보고 알아들었다. \.{TRIDE}라고 쳐도
+\.{TRIDENT}(삼지창)로 통했는데, 포트란 시절의 메모리 절약이 낳은 관용이다.
+한글에서는 이 수를 쓸 수 없다 --- UTF-8에서 한 글자는 세 바이트라,
+바이트로 자르면 글자가 두 동강 난다. 그래서 한글판의 |lookup|은 단어
+전체로 맞춘다. 우리가 아는 단어들은 맵 |words|에 담고, 함께 쓰이는
+문자열들도 게임 상태에 둔다: |defaultMsg|는 동작이 특별한 조건을 못
+채웠을 때 내는 동작별 기본 대사이고, |message|는 메시지 단어가 가리키는
+고정 대사들이다.
+
+@<게임의 상태@>=
+word1, word2 string // listen이 채우는 명령 단어 둘
+
+words      map[string]vocabEntry // 우리가 아는 단어들
+defaultMsg [32]string            // 동작별 기본 메시지
+message    [13]string            // 도움말, 정보 등 고정 메시지
+
+@ @<어휘@>=
 func (g *Game) lookup(w string) (vocabEntry, bool) {
 	e, ok := g.words[w]
 	return e, ok
 }
 
-// listen은 한두 단어짜리 명령을 읽어 word1, word2에 담는다.
-// (advent.w "Low-level input"의 listen). EOF면 false.
+@ |listen|은 한 줄을 읽어 한두 단어를 |word1|, |word2|에 담는다.
+크라우더가 1975년에 고른 이 ``동사--명사'' 두 단어 문법은 자연어 처리의
+꿈에 비하면 초라하지만, 50년이 지나도록 텍스트 어드벤처의 표준으로
+살아남았다. 단순한 것이 오래간다. 입력이 끝났으면(EOF) |false|를
+돌려준다.
+
+@<어휘@>=
 func (g *Game) listen() bool {
 	for {
 		fmt.Fprintf(g.out, "* ")
@@ -46,14 +77,116 @@ func (g *Game) listen() bool {
 	}
 }
 
-// buildVocabulary는 우리가 아는 모든 단어와 기본 메시지를 채운다.
+@ 사전 만들기. 게임을 시작할 때 |buildVocabulary|가 네 종류의 단어를
+모두 |words|에 채운다. 종류별 등록 도우미를 클로저로 셋 만들어 두면
+아래 목록들이 표처럼 읽힌다.
+
+@<어휘@>=
 func (g *Game) buildVocabulary() {
 	g.words = make(map[string]vocabEntry)
 	mw := func(w string, m motion) { g.words[w] = vocabEntry{motionType, int(m)} }
 	ow := func(w string, o object) { g.words[w] = vocabEntry{objectType, int(o)} }
 	aw := func(w string, a action) { g.words[w] = vocabEntry{actionType, int(a)} }
 
-	// ---- 이동 단어 ----
+	@<이동 단어를 등록한다@>@;
+	@<사물 단어를 등록한다@>@;
+	@<동작 단어와 기본 메시지를 등록한다@>@;
+	g.buildMessageWords()
+}
+
+@ 이동 동사의 가짓수는 나침반 여덟 방위부터 \.{Y2} 같은 고유명사까지
+일흔다섯에 이른다. 이 enum의 값 순서는 절대 바꾸면 안 된다 --- 동굴의
+이동표가 이 정수값으로 색인되어 있어서, 순서가 곧 정보다. 이 제약은
+객체·동작·장소 enum도 똑같이 진다.
+
+@<어휘@>=
+type motion int
+
+const (
+	N motion = iota
+	S
+	E
+	W
+	NE
+	SE
+	NW
+	SW
+	U
+	D
+	L
+	R
+	IN
+	OUT
+	FORWARD
+	BACK
+	OVER
+	ACROSS
+	UPSTREAM
+	DOWNSTREAM
+	ENTER
+	CRAWL
+	JUMP
+	CLIMB
+	LOOK
+	CROSS
+	ROAD
+	WOODS
+	VALLEY
+	HOUSE
+	GULLY
+	STREAM
+	DEPRESSION
+	ENTRANCE
+	CAVE
+	ROCK
+	SLAB
+	BED
+	PASSAGE
+	CAVERN
+	CANYON
+	AWKWARD
+	SECRET
+	BEDQUILT
+	RESERVOIR
+	GIANT
+	ORIENTAL
+	SHELL
+	BARREN
+	BROKEN
+	DEBRIS
+	VIEW
+	FORK
+	PIT
+	SLIT
+	CRACK
+	DOME
+	HOLE
+	WALL
+	HALL
+	ROOM
+	FLOOR
+	STAIRS
+	STEPS
+	COBBLES
+	SURFACE
+	DARK
+	LOW
+	OUTDOORS
+	Y2
+	XYZZY
+	PLUGH
+	PLOVER
+	OFFICE
+	NOWHERE
+)
+
+@ 이동 단어의 한글 낱말들. 나침반 방위는 \.{n}, \.{sw} 같은 영문 약자도
+받아 준다 --- 지도를 그리며 뛰는 손가락에게 \.{북동}은 너무 길다.
+마법 주문 \.{xyzzy}와 \.{plugh}도 여기 있다. \.{xyzzy}는 크라우더가
+지어낸 무의미한 소리인데, 이제는 프로그래머들의 은어로 사전에까지
+올랐다. 주문을 번역하지 않은 이유는 들어가며에서 말했다.
+
+@<이동 단어를 등록한다@>=
 	mw("북", N)
 	mw("n", N)
 	mw("남", S)
@@ -158,7 +291,12 @@ func (g *Game) buildVocabulary() {
 	mw("본부", OFFICE)
 	mw("아무데도", NOWHERE)
 
-	// ---- 사물 단어 ----
+@ 사물 단어들. 사물 자체(enum |object|)는 객체 장에서 정의하고, 여기서는
+낱말만 등록한다. 같은 물건에 별칭을 넉넉히 달았다 --- \.{램프}와
+\.{등불}, \.{배터리}와 \.{건전지}처럼. 모험가가 단어 하나가 안 통해서
+동굴 앞에서 발을 구르는 일만은 없어야 하니까.
+
+@<사물 단어를 등록한다@>=
 	ow("열쇠", KEYS)
 	ow("램프", LAMP)
 	ow("등불", LAMP)
@@ -225,7 +363,56 @@ func (g *Game) buildVocabulary() {
 	ow("향신료", SPICES)
 	ow("사슬", CHAIN)
 
-	// ---- 동작 단어 + 기본 메시지 ----
+@ 동작 동사. 마지막 둘(SAVE, RESTORE)은 원작에 없던 것을 이 포팅에서
+더한 동사다. 원작 동사들의 값(0부터 QUIT까지)은 그대로 두어 데이터
+호환을 지켰다.
+
+@<어휘@>=
+type action int
+
+const (
+	ABSTAIN action = iota
+	TAKE
+	DROP
+	OPEN
+	CLOSE
+	ON
+	OFF
+	WAVE
+	CALM
+	GO
+	RELAX
+	POUR
+	EAT
+	DRINK
+	RUB
+	TOSS
+	WAKE
+	FEED
+	FILL
+	BREAK
+	BLAST
+	KILL
+	SAY
+	READ
+	FEEFIE
+	BRIEF
+	FIND
+	INVENTORY
+	SCORE
+	QUIT
+	// 원작에는 없는, 이 포팅에서 추가한 동사. (저장/불러오기)
+	// 원작 동사 값(0~QUIT)은 그대로 두어 데이터 호환을 유지한다.
+	SAVE
+	RESTORE
+)
+
+@ 동작 단어를 등록하면서 그 동작의 기본 메시지도 함께 채운다. 기본
+메시지끼리 서로를 베끼는 대목이 재미있다 --- \.{닫아}의 핀잔은 \.{열어}의
+것을 그대로 쓰고, \.{던져}는 \.{버려}의 것을 쓴다. 원작의 어휘표가
+꼭 이런 식으로 짜여 있었다.
+
+@<동작 단어와 기본 메시지를 등록한다@>=
 	aw("가져가", TAKE)
 	aw("집어", TAKE)
 	aw("잡아", TAKE)
@@ -315,17 +502,20 @@ func (g *Game) buildVocabulary() {
 	aw("불러오기", RESTORE)
 	aw("복원", RESTORE)
 
-	// ---- 메시지 단어 (도움말, 정보 등) ----
-	g.buildMessageWords()
-}
+@ 메시지 단어들. 정해진 대꾸 하나가 전부인 단어들이다. 등록 도우미가
+둘인데, |mw|는 단어를 현재 메시지 슬롯에 걸고, |nm|은 슬롯을 채우고
+다음으로 넘어간다. 원작의 \.{abracadabra} 목록은 한국 마법사의 어휘로
+갈아입었다 --- \.{수리수리} \.{마수리}부터 \.{열려라} \.{참깨}까지
+줄줄이 외쳐 봐야 ``낡아빠진 옛 마법 단어''라는 핀잔만 돌아오지만, 그
+핀잔을 듣는 재미로 다들 한 번씩은 외쳐 본다. 슬롯을 채우기만 하고
+단어를 걸지 않는 |nm|도 몇 있는데, 폭파 결말처럼 다른 코드가 인덱스로
+직접 꺼내 쓰는 대사들이다.
 
-// buildMessageWords는 고정 메시지를 출력하는 단어들을 등록한다.
-// (advent.w의 message_type "Build the vocabulary" 섹션)
+@<어휘@>=
 func (g *Game) buildMessageWords() {
 	k := 0
-	mw := func(w string) { g.words[w] = vocabEntry{messageType, k} } // 현재 메시지 슬롯을 가리킴
-	nm := func(s string) { g.message[k] = s; k++ }                   // 메시지를 채우고 다음 슬롯으로
-
+	mw := func(w string) { g.words[w] = vocabEntry{messageType, k} } // 현재 슬롯을 가리킴
+	nm := func(s string) { g.message[k] = s; k++ }                   // 슬롯을 채우고 다음으로
 	mw("수리수리")
 	mw("마수리")
 	mw("열려라")
@@ -400,4 +590,59 @@ func (g *Game) buildMessageWords() {
 	mw("수영")
 	mw("헤엄")
 	nm("어떻게 하는지 모르겠어.")
+}
+
+@ 어휘의 시험. 한글 단어가 제 종류와 뜻으로 찾아지는지, 기본 메시지의
+베껴 쓰기 사슬이 온전한지 본다.
+
+@(advent_test.go@>=
+func newTestGame() *Game {
+	g := &Game{in: bufio.NewReader(strings.NewReader("")), rx: 43}
+	g.buildVocabulary()
+	return g
+}
+
+func TestVocabLookup(t *testing.T) {
+	g := newTestGame()
+	cases := []struct {
+		word string
+		typ  wordtype
+		mean int
+		ok   bool
+	}{
+		{"가져가", actionType, int(TAKE), true},
+		{"금괴", objectType, int(GOLD), true},
+		{"북", motionType, int(N), true},
+		{"북동", motionType, int(NE), true},       // 한글은 전체 단어 매칭(절단 없음)
+		{"xyzzy", motionType, int(XYZZY), true}, // 주문은 영어 유지
+		{"plugh", motionType, int(PLUGH), true},
+		{"도움말", messageType, 1, true},
+		{"수리수리", messageType, 0, true},
+		{"수영", messageType, 12, true},
+		{"틱탁", noType, 0, false}, // 모르는 단어
+		{"물", objectType, int(WATER), true},
+	}
+	for _, c := range cases {
+		e, ok := g.lookup(c.word)
+		if ok != c.ok {
+			t.Errorf("lookup(%q) ok=%v, want %v", c.word, ok, c.ok)
+			continue
+		}
+		if ok && (e.typ != c.typ || e.meaning != c.mean) {
+			t.Errorf("lookup(%q) = {typ:%d mean:%d}, want {typ:%d mean:%d}", c.word, e.typ, e.meaning, c.typ, c.mean)
+		}
+	}
+}
+
+func TestDefaultMsgChaining(t *testing.T) {
+	g := newTestGame()
+	if g.defaultMsg[CLOSE] != g.defaultMsg[OPEN] || g.defaultMsg[OPEN] == "" {
+		t.Error("CLOSE는 OPEN 메시지를 공유해야 함")
+	}
+	if g.defaultMsg[QUIT] != "응?" {
+		t.Errorf("QUIT 기본메시지=%q, want SCORE의 \"응?\"", g.defaultMsg[QUIT])
+	}
+	if g.ok() != "알았어." {
+		t.Errorf("ok()=%q, want \"알았어.\"", g.ok())
+	}
 }

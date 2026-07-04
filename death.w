@@ -1,13 +1,13 @@
-package main
+@* 죽음과 부활.
+끈질긴 모험가만이 죽는 법도 배운다. 구덩이에 떨어지거나, 난쟁이의
+칼에 맞거나, 곰과 함께 다리에서 추락하거나. 다행히 이 동굴의 관리인은
+주황색 연기를 피우는 부활 마법을 부린다 --- 다만 재고가 세 번뿐이고,
+회를 거듭할수록 말투가 험해진다. 짝수 인덱스가 부활 권유, 홀수가
+부활 장면이다.
 
-import "fmt"
+@<죽음과 부활@>=
+const maxDeaths = 3 // 허용되는 죽음 횟수
 
-// 죽음과 부활. 끈질긴 모험가는 최대 세 번까지 되살아날 수 있다.
-// (advent.w "Death and resurrection")
-
-const maxDeaths = 3 // 허용되는 죽음 횟수 (advent.w:4168)
-
-// 죽음·부활 때 하는 말. 짝수 인덱스는 부활 권유, 홀수는 부활 시 메시지. (advent.w:4183)
 var deathWishes = [2 * maxDeaths]string{
 	"이런, 너 그만 죽어 버린 것 같네.  내가 도와줄 수\n" +
 		"있을지도 모르겠지만, 사실 이런 건 해본 적이 없어.  널\n" +
@@ -25,9 +25,19 @@ var deathWishes = [2 * maxDeaths]string{
 	"그래, 그렇게 잘났으면 직접 해 봐!  난 갈래!",
 }
 
-// handleDeath는 죽음을 처리한다. 부활하면 true, 게임을 끝내야 하면 false.
-// 죽었을 때 newloc은 의미가 없고 oldloc은 당신을 죽인 곳이므로, 마지막으로
-// 안전했던 oldoldloc을 본다. (advent.w "Deal with death and resurrection")
+@ 죽음의 장부는 두 칸이면 된다.
+
+@<게임의 상태@>=
+deathCount int  // 몇 번 죽었나
+dying      bool // 이번에 죽었는가 (죽음 처리 대기)
+
+@ 죽음의 처리. 폐쇄 시각이 코앞이면 부활도 생략이다. 부활하면 들고
+있던 것을 죽은 자리 근처(|oldoldloc|)에 떨군다 --- 거꾸로 도는 것은
+새를 새장보다 먼저 떨궈 새가 새장 밖으로 나오게 하려는 원작의 세심함
+이다. 램프만은 특별히 길 끝에 놓아 준다. 시체 회수 여행을 최소한
+불 없이 시작하지는 않도록. 너 자신은 건물 안에서 깨어난다.
+
+@<죽음과 부활@>=
 func (g *Game) handleDeath() bool {
 	g.dying = false
 	g.deathCount++
@@ -40,8 +50,6 @@ func (g *Game) handleDeath() bool {
 		g.deathCount == maxDeaths {
 		return false
 	}
-	// 부활: 들고 있던 것들을 oldoldloc에 떨군다(새는 새장보다 먼저 떨구려고
-	// 거꾸로 돈다). 램프는 건물 밖에 두고, 당신은 건물 안에 둔다.
 	if g.toting(LAMP) {
 		g.prop[LAMP] = 0
 	}
@@ -60,8 +68,11 @@ func (g *Game) handleDeath() bool {
 	return true
 }
 
-// dwarvesUpset: 폐쇄 후 난쟁이를 깨우면 떼로 칼을 던져 당신을 죽인다.
-// (advent.w dwarves_upset)
+@ 폐쇄 후의 보관실에서 난쟁이를 건드리면 --- 깨우든, 치든, 거울을
+깨서 소음을 내든 --- 떼로 일어나 칼을 던진다. 전부 명중이다. 최후의
+퍼즐 방에서는 얌전히 폭파 지점이나 고민하라는 뜻이다.
+
+@<죽음과 부활@>=
 func (g *Game) dwarvesUpset() actResult {
 	fmt.Fprintf(g.out, "그 소동에 난쟁이들이 깨어났어.  이제 위협적인 작은 난쟁이\n"+
 		"여럿이 너랑 같은 방에 있어!  대부분이 너에게 칼을\n"+

@@ -6,7 +6,17 @@
 *.out
 
 # 원작 CWEB 소스 (© Woods & Knuth, all rights reserved) — 저장소에 포함하지 않음
-advent.w
+advent.cweb
 
 # 게임 저장 파일
 advent.save
+
+# gtangle/gweave 생성물 — 소스는 .w 파일들이다 (make tangle / make doc으로 재생성)
+advent.go
+advent_test.go
+advent.pdf
+advent.tex
+advent.log
+advent.toc
+advent.idx
+advent.scn

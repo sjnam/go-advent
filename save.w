@@ -1,22 +1,21 @@
-package main
+@* 저장과 불러오기.
+원작에 없던 단 하나의 새 기능이다. 1977년의 모험가는 전산실 단말
+앞에서 한 판을 내리 끝내야 했지만(그래서 생산성이 그토록 떨어졌을
+것이다), 우리는 \.{저장}이라고 치면 한 판을 파일에 접어 두고 내일
+이어 할 수 있다.
 
-import (
-	"encoding/gob"
-	"os"
-)
+구현은 게임의 설계가 거저 준 선물이다. 영속 상태가 죄다 |Game| 한
+곳에 모여 있으니, 그걸 적었다 되읽으면 끝이다. 다만 \GO/의
+|encoding/gob|은 비공개 필드를 직렬화하지 못하므로, 내보낸(대문자)
+필드를 가진 |saveState|로 옮겨 담는다. 어휘와 메시지는 시작할 때
+다시 만들면 되니 젖혀 두고, 턴 사이에만 뜻이 있는 임시 값(|mot|,
+|verb|, |obj|$\ldots$)도 저장 시점(턴 경계)에는 무의미하니 뺀다.
+난수 상태 |rx|는 꼭 담아야 한다 --- 그래야 저장하고 불러와도
+결정론이 이어진다. 전역인 |objBase|도 게임 중에 바뀌므로 함께 간다.
 
-// 게임 저장과 불러오기. 원작에는 없던 기능으로, 이 포팅에서 더했다.
-//
-// 게임의 영속 상태는 거의 다 Game 구조체에 모여 있어서, 그 상태만 파일에
-// 적었다 되읽으면 그대로 저장/복원이 된다. 다만 비공개 필드는 encoding/gob이
-// 직렬화하지 못하므로, 내보낸(대문자) 필드를 가진 saveState로 옮겨 담는다.
-// 어휘·메시지(words/defaultMsg/message)는 시작 시 buildVocabulary로 다시
-// 만들므로 저장하지 않는다. 턴 사이에만 의미 있는 임시 값(mot/verb/obj 등)도
-// 저장 시점(턴 경계)에는 무의미하므로 제외한다.
-
+@<저장과 불러오기@>=
 const saveFile = "advent.save" // 고정 저장 파일명
 
-// saveState는 한 판의 영속 상태를 담는 직렬화용 스냅샷이다.
 type saveState struct {
 	Rx int
 
@@ -56,7 +55,10 @@ type saveState struct {
 	GaveUp    bool
 }
 
-// snapshot은 현재 게임 상태를 saveState로 모은다.
+@ 옮겨 담기와 되돌리기. 재미없는 필드 나르기의 연속이지만, 문학적
+프로그램이라고 세금이 면제되지는 않는다.
+
+@<저장과 불러오기@>=
 func (g *Game) snapshot() saveState {
 	return saveState{
 		Rx:            g.rx,
@@ -96,7 +98,7 @@ func (g *Game) snapshot() saveState {
 	}
 }
 
-// restore는 saveState의 값을 현재 게임에 되돌려 놓는다.
+@ @<저장과 불러오기@>=
 func (g *Game) restore(s saveState) {
 	g.rx = s.Rx
 	g.oldoldloc, g.oldloc, g.loc, g.newloc = s.Oldoldloc, s.Oldloc, s.Loc, s.Newloc
@@ -117,7 +119,9 @@ func (g *Game) restore(s saveState) {
 	g.limit, g.gaveUp = s.Limit, s.GaveUp
 }
 
-// save는 현재 상태를 파일에 기록한다.
+@ 파일 입출력. |save|는 스냅숏을 gob으로 적고, |load|는 읽어 되돌린다.
+
+@<저장과 불러오기@>=
 func (g *Game) save(path string) error {
 	f, err := os.Create(path)
 	if err != nil {
@@ -127,7 +131,6 @@ func (g *Game) save(path string) error {
 	return gob.NewEncoder(f).Encode(g.snapshot())
 }
 
-// load는 파일에서 상태를 읽어 게임에 되돌린다.
 func (g *Game) load(path string) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -140,4 +143,38 @@ func (g *Game) load(path string) error {
 	}
 	g.restore(s)
 	return nil
+}
+
+@ 저장의 시험. 상태를 어질러 놓고 저장했다가 새 게임에 불러와,
+어질러 둔 그대로인지 본다.
+
+@(advent_test.go@>=
+func TestSaveRestore(t *testing.T) {
+	g := &Game{in: bufio.NewReader(strings.NewReader("")), out: io.Discard, rx: 42}
+	g.buildVocabulary()
+	g.loadObjects()
+	// 상태를 좀 바꿔 둔다
+	g.loc = hmk
+	g.turns = 17
+	g.prop[LAMP] = 1
+	g.carry(KEYS)
+	g.dflag = 2
+	g.clock1 = 5
+
+	path := filepath.Join(t.TempDir(), "t.save")
+	if err := g.save(path); err != nil {
+		t.Fatal(err)
+	}
+	// 다른 게임에 불러오기
+	g2 := &Game{in: bufio.NewReader(strings.NewReader("")), out: io.Discard}
+	g2.buildVocabulary()
+	g2.loadObjects()
+	if err := g2.load(path); err != nil {
+		t.Fatal(err)
+	}
+	if g2.loc != hmk || g2.turns != 17 || g2.prop[LAMP] != 1 ||
+		!g2.toting(KEYS) || g2.dflag != 2 || g2.clock1 != 5 || g2.rx != g.rx {
+		t.Errorf("복원 상태 불일치: loc=%d turns=%d lamp=%d keys=%v dflag=%d clock1=%d",
+			g2.loc, g2.turns, g2.prop[LAMP], g2.toting(KEYS), g2.dflag, g2.clock1)
+	}
 }
