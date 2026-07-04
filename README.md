@@ -1,4 +1,4 @@
-# go-advent (한글판)
+# 거대 동굴 탐험
 
 This is a fully Korean-localized version of *Colossal Cave Adventure*, which Donald Knuth ported from CWEB to GWEB.
 The original game was *Adventure 1.0*, a FORTRAN game created by Will Crowther (1975–76) and
