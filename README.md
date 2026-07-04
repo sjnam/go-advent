@@ -31,12 +31,11 @@ $ go run .
 [GWEB](https://github.com/sjnam/gweb)(`gtangle`/`gweave`)이 필요합니다.
 
 ```sh
-make tangle            # advent.w -> advent.go, advent_test.go
-go build -o advent .  # 빌드
-./advent               # 플레이 (매번 다른 모험 — 현재 시각을 난수 시드로)
+make build            # advent.w -> advent.go, advent_test.go -> advent
+./advent              # 플레이 (매번 다른 모험 — 현재 시각을 난수 시드로)
 
-make doc               # advent.pdf 조판 (gweave + luatex)
-make test              # go test ./...
+make doc              # advent.pdf 조판 (gweave + luatex)
+make test             # go test ./...
 ```
 
 `--seed` 플래그로 난수를 고정할 수 있습니다(테스트·비교용). 시드를 고정하면
