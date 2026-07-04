@@ -48,7 +48,7 @@ func (g *Game) repDefault() actResult {
 }
 
 func (g *Game) getObjR() actResult {
-	fmt.Fprintf(g.out, "%s 뭘?\n", g.word1)
+	fmt.Fprintf(g.out, "뭘 %s?\n", g.word1)
 	return aNeed()
 }
 

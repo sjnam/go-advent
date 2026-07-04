@@ -34,5 +34,5 @@ test: tangle
 	go test ./...
 
 clean:
-	rm -f advent.go advent_test.go
+	rm -f advent.go advent_test.go advent go-advent
 	rm -f advent.tex advent.log advent.toc advent.scn advent.idx advent.pdf
