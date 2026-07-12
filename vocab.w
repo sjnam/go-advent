@@ -111,7 +111,7 @@ const (
 )
 
 @ 먼저 나침반 여덟 방위와 오르내림, 좌우 --- 동굴에서 몸을 틀 수 있는 모든 방향이다.
-
+@d N S E W NE SE NW SW U D L R
 @<나침반과 오르내림 이동@>=
 	N motion = iota
 	S
@@ -127,7 +127,7 @@ const (
 	R
 
 @ 드나들고, 건너고, 기고, 뛰는 몸짓들. \.{봐}(LOOK)도 어휘상으로는 이동이다.
-
+@d IN OUT FORWARD BACK OVER ACROSS UPSTREAM DOWNSTREAM ENTER CRAWL JUMP CLIMB LOOK CROSS
 @<드나듦과 몸짓 이동@>=
 	IN
 	OUT
@@ -145,7 +145,8 @@ const (
 	CROSS
 
 @ 지물을 부르면 그리로 간다. 지상의 길과 집, 계곡부터 동굴 초입의 잔해와 자갈까지.
-
+@d ROAD WOODS VALLEY HOUSE GULLY STREAM DEPRESSION ENTRANCE CAVE
+@d ROCK SLAB BED PASSAGE CAVERN CANYON AWKWARD SECRET BEDQUILT RESERVOIR
 @<들과 숲의 지물 이동@>=
 	ROAD
 	WOODS
@@ -168,7 +169,8 @@ const (
 	RESERVOIR
 
 @ 동굴 깊은 곳의 명소들 --- 거인의 방, 동양식 방, 조개방, 그리고 갖가지 구덩이와 돔.
-
+@d GIANT ORIENTAL SHELL BARREN BROKEN DEBRIS VIEW FORK PIT SLIT
+@d CRACK DOME HOLE WALL HALL ROOM FLOOR STAIRS STEPS COBBLES
 @<동굴 명소 이동@>=
 	GIANT
 	ORIENTAL
@@ -192,7 +194,7 @@ const (
 	COBBLES
 
 @ 끝으로 마법 주문들과, 아무 데도 가지 않는 |NOWHERE|.
-
+@d SURFACE DARK LOW OUTDOORS Y2 XYZZY PLUGH PLOVER OFFICE NOWHERE
 @<주문과 특수 이동@>=
 	SURFACE
 	DARK
