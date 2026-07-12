@@ -39,9 +39,10 @@ func runGame(input string) string {
 	return out.String()
 }
 
-// TestGolden은 testdata/*.in 각각을 게임에 넣고, 출력이 같은 이름의
-// .golden(시드 고정 C reference로 캡처)과 byte-identical인지 확인한다.
-// -update 플래그로 golden을 갱신할 수 있다.
+
+@ 대본마다 다른 길로 동굴을 헤집는다 --- 걷기, 보물, 물과 기름, 격자문, 죽음.
+
+@(advent_test.go@>=
 func TestGolden(t *testing.T) {
 	ins, err := filepath.Glob("testdata/*.in")
 	if err != nil {

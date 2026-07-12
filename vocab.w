@@ -103,6 +103,16 @@ func (g *Game) buildVocabulary() {
 type motion int
 
 const (
+	@<나침반과 오르내림 이동@>@;
+	@<드나듦과 몸짓 이동@>@;
+	@<들과 숲의 지물 이동@>@;
+	@<동굴 명소 이동@>@;
+	@<주문과 특수 이동@>@;
+)
+
+@ 먼저 나침반 여덟 방위와 오르내림, 좌우 --- 동굴에서 몸을 틀 수 있는 모든 방향이다.
+
+@<나침반과 오르내림 이동@>=
 	N motion = iota
 	S
 	E
@@ -115,6 +125,10 @@ const (
 	D
 	L
 	R
+
+@ 드나들고, 건너고, 기고, 뛰는 몸짓들. \.{봐}(LOOK)도 어휘상으로는 이동이다.
+
+@<드나듦과 몸짓 이동@>=
 	IN
 	OUT
 	FORWARD
@@ -129,6 +143,10 @@ const (
 	CLIMB
 	LOOK
 	CROSS
+
+@ 지물을 부르면 그리로 간다. 지상의 길과 집, 계곡부터 동굴 초입의 잔해와 자갈까지.
+
+@<들과 숲의 지물 이동@>=
 	ROAD
 	WOODS
 	VALLEY
@@ -148,6 +166,10 @@ const (
 	SECRET
 	BEDQUILT
 	RESERVOIR
+
+@ 동굴 깊은 곳의 명소들 --- 거인의 방, 동양식 방, 조개방, 그리고 갖가지 구덩이와 돔.
+
+@<동굴 명소 이동@>=
 	GIANT
 	ORIENTAL
 	SHELL
@@ -168,6 +190,10 @@ const (
 	STAIRS
 	STEPS
 	COBBLES
+
+@ 끝으로 마법 주문들과, 아무 데도 가지 않는 |NOWHERE|.
+
+@<주문과 특수 이동@>=
 	SURFACE
 	DARK
 	LOW
@@ -178,7 +204,6 @@ const (
 	PLOVER
 	OFFICE
 	NOWHERE
-)
 
 @ 이동 단어의 한글 낱말들. 나침반 방위는 \.{n}, \.{sw} 같은 영문 약자도
 받아 준다 --- 지도를 그리며 뛰는 손가락에게 \.{북동}은 너무 길다.
@@ -213,6 +238,10 @@ const (
 	mw("내려가", D)
 	mw("왼쪽", L)
 	mw("오른쪽", R)
+
+@ 드나듦과 몸짓의 낱말들.
+
+@<이동 단어를 등록한다@>=
 	mw("안", IN)
 	mw("안으로", IN)
 	mw("나가", OUT)
@@ -236,6 +265,10 @@ const (
 	mw("둘러봐", LOOK)
 	mw("살펴봐", LOOK)
 	mw("건너", CROSS)
+
+@ 들과 숲, 동굴 초입의 지물 낱말들.
+
+@<이동 단어를 등록한다@>=
 	mw("길", ROAD)
 	mw("언덕", ROAD)
 	mw("숲", WOODS)
@@ -259,6 +292,10 @@ const (
 	mw("비밀", SECRET)
 	mw("베드퀼트", BEDQUILT)
 	mw("저수지", RESERVOIR)
+
+@ 동굴 명소의 낱말들.
+
+@<이동 단어를 등록한다@>=
 	mw("거인", GIANT)
 	mw("동양식", ORIENTAL)
 	mw("조개방", SHELL)
@@ -279,6 +316,10 @@ const (
 	mw("계단", STAIRS)
 	mw("층계", STEPS)
 	mw("자갈", COBBLES)
+
+@ 그리고 주문 --- 언제나처럼 주문만 영어다.
+
+@<이동 단어를 등록한다@>=
 	mw("지표", SURFACE)
 	mw("어둠", DARK)
 	mw("낮은", LOW)
@@ -316,6 +357,10 @@ const (
 	ow("잡지", MAG)
 	ow("난쟁이", DWARF)
 	ow("칼", KNIFE)
+
+@ 먹고 마시는 것들과 동굴의 주민들.
+
+@<사물 단어를 등록한다@>=
 	ow("음식", FOOD)
 	ow("병", BOTTLE)
 	ow("물", WATER)
@@ -340,6 +385,10 @@ const (
 	ow("배터리", BATTERIES)
 	ow("건전지", BATTERIES)
 	ow("이끼", MOSS)
+
+@ 그리고 보물 열다섯 --- \.{금}과 \.{금괴}처럼 별칭도 넉넉히 두었다.
+
+@<사물 단어를 등록한다@>=
 	ow("금", GOLD)
 	ow("금괴", GOLD)
 	ow("다이아몬드", DIAMONDS)
@@ -442,6 +491,10 @@ const (
 	g.defaultMsg[GO] = "어디로?"
 	aw("가만", RELAX)
 	g.defaultMsg[RELAX] = "알았어."
+
+@ 붓고 먹고 마시고 문지르고 던지는, 물건에 손대는 동사들.
+
+@<동작 단어와 기본 메시지를 등록한다@>=
 	aw("부어", POUR)
 	aw("따라", POUR)
 	g.defaultMsg[POUR] = g.defaultMsg[DROP]
@@ -472,6 +525,10 @@ const (
 	aw("공격", KILL)
 	aw("때려", KILL)
 	g.defaultMsg[KILL] = g.defaultMsg[EAT]
+
+@ 말과 주문, 그리고 게임 살림 동사들.
+
+@<동작 단어와 기본 메시지를 등록한다@>=
 	aw("말해", SAY)
 	aw("외쳐", SAY)
 	aw("read", READ)
@@ -513,6 +570,14 @@ const (
 
 @<어휘@>=
 func (g *Game) buildMessageWords() {
+	@<주문 흉내와 도움말@>@;
+	@<숲과 땅파기의 문답@>@;
+	@<안내와 잔소리@>@;
+}
+
+@ 등록 도우미 둘을 마련하고, 옛 마법 단어들의 명단과 이 게임에서 가장 긴 대사인 도움말을 채운다.
+
+@<주문 흉내와 도움말@>=
 	k := 0
 	mw := func(w string) { g.words[w] = vocabEntry{messageType, k} } // 현재 슬롯을 가리킴
 	nm := func(s string) { g.message[k] = s; k++ }                   // 슬롯을 채우고 다음으로
@@ -543,6 +608,10 @@ func (g *Game) buildMessageWords() {
 		"빼고) 보통 지상 어디서든 건물로 가. 또, 동굴 통로는 많이 휘어서,\n" +
 		"어떤 방을 북쪽으로 나갔다고 다음 방에 남쪽으로 들어가리란 보장은\n" +
 		"없어. 행운을 빌어!")
+
+@ 숲의 나무가 궁금한 식물학자와, 삽도 없이 땅을 파려는 모험가를 위한 답변들.
+
+@<숲과 땅파기의 문답@>=
 	mw("나무")
 	mw("나무들")
 	nm("숲의 나무는 큰 활엽수인 참나무와 단풍나무야, 가끔 소나무나\n" +
@@ -570,6 +639,10 @@ func (g *Game) buildMessageWords() {
 		"잔해에 파묻혀. 넌 구멍을 통해 당당히 걸어 나가 본부에 다다라.\n" +
 		"그곳에선 환호하는 다정한 요정 무리가 정복자 모험가인 너를 노을\n" +
 		"속으로 데려가.")
+
+@ \.{멈춰}를 \.{그만}으로 고쳐 주는 잔소리와, 점수의 이치를 밝히는 긴 안내문.
+
+@<안내와 잔소리@>=
 	mw("멈춰")
 	nm("\"멈춰\"라는 단어는 몰라. 그만두고 싶으면 \"그만\"을 써.")
 	mw("정보")
@@ -590,7 +663,6 @@ func (g *Game) buildMessageWords() {
 	mw("수영")
 	mw("헤엄")
 	nm("어떻게 하는지 모르겠어.")
-}
 
 @ 어휘의 시험. 한글 단어가 제 종류와 뜻으로 찾아지는지, 기본 메시지의
 베껴 쓰기 사슬이 온전한지 본다.
@@ -634,6 +706,10 @@ func TestVocabLookup(t *testing.T) {
 	}
 }
 
+
+@ 기본 메시지의 베껴 쓰기 사슬도 확인한다.
+
+@(advent_test.go@>=
 func TestDefaultMsgChaining(t *testing.T) {
 	g := newTestGame()
 	if g.defaultMsg[CLOSE] != g.defaultMsg[OPEN] || g.defaultMsg[OPEN] == "" {

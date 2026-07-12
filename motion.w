@@ -105,6 +105,12 @@ func (g *Game) determineNextLocation() {
 		@<쓸 수 없는 이동에 대해 해명한다@>@;
 		return
 	}
+	@<조건을 만족하는 목적지를 확정한다@>@;
+}
+
+@ 명령을 찾았으면 조건을 풀어 목적지를 확정한다. 특수 목적지 셋의 명장면이 여기 있다.
+
+@<조건을 만족하는 목적지를 확정한다@>=
 	for {
 		q = g.advanceCondition(q)
 		g.newloc = caveTravels[q].dest
@@ -129,7 +135,6 @@ func (g *Game) determineNextLocation() {
 			return
 		}
 	}
-}
 
 @ 조건값 |cond|의 인코딩은 이렇다. 포트란 시절의 정수 하나에 우겨 넣은
 살림이 그대로 왔다:
@@ -240,6 +245,10 @@ g.newloc = neside + swside - g.loc // 건넌다
 if g.prop[TROLL] == 0 {
 	g.prop[TROLL] = 1
 }
+
+@ 건너기는 했는데 곰을 데리고 있다면 --- 다리가 그 무게를 견디지 못한다.
+
+@<가능하면 트롤 다리를 건넌다@>=
 if !g.toting(BEAR) {
 	return
 }

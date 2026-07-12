@@ -14,6 +14,12 @@ func (g *Game) doKill() actResult {
 			return r
 		}
 	}
+	@<주민별로 공격의 결말을 가린다@>@;
+}
+
+@ 공격의 결말들. 대체로 소용없다는 대답이지만, 새와 용만은 정말로 일이 벌어진다.
+
+@<주민별로 공격의 결말을 가린다@>=
 	switch g.obj {
 	case NOTHING:
 		return g.rep("여기엔 공격할 게 없어.")
@@ -28,6 +34,10 @@ func (g *Game) doKill() actResult {
 		return g.rep("껍데기가 아주 단단해서 공격이 안 통해.")
 	case SNAKE:
 		return g.rep("뱀을 공격하는 건 소용도 없고 아주 위험해.")
+
+@ 난쟁이·트롤·곰에게는 맨손이 통하지 않는다 --- 한 상대만 빼고, 그 이야기는 이미 했다.
+
+@<주민별로 공격의 결말을 가린다@>=
 	case DWARF:
 		if g.closed {
 			return g.dwarvesUpset()
@@ -48,7 +58,6 @@ func (g *Game) doKill() actResult {
 	default:
 		return g.repDefault()
 	}
-}
 
 @ 공격 대상 세기. 난쟁이·뱀·용·트롤·곰이 우선이고, 그들이 없을 때만
 새와 조개가 후보에 든다 --- 새는 방금 던지기에서 넘어온 경우라면
@@ -169,6 +178,22 @@ func (g *Game) doFeed() actResult {
 			return g.rep("뱀이 네 새를 삼켜 버렸어.")
 		}
 	case BEAR:
+		@<곰에게 먹인다@>@;
+	case DWARF:
+		if !g.here(FOOD) {
+			return g.repDefault()
+		}
+		g.dflag++
+		return g.rep("이 바보야, 난쟁이는 석탄만 먹어! 이제 녀석을 제대로 화나게 했어!")
+	default:
+		return g.rep(g.defaultMsg[CALM])
+	}
+	return g.rep("여기엔 그게 먹고 싶어 할 만한 게 없어 (너라면 모를까).")
+}
+
+@ 곰은 음식을 주면 온순해지고, 곰이 지키던 도끼도 돌아온다. 음식이 없다면 곰의 상태에 따라 대꾸가 갈린다.
+
+@<곰에게 먹인다@>=
 		if !g.here(FOOD) {
 			if g.prop[BEAR] == 0 {
 				break
@@ -184,17 +209,6 @@ func (g *Game) doFeed() actResult {
 		objBase[AXE] = NOTHING // 도끼를 다시 들 수 있다
 		return g.rep("곰이 네 음식을 게걸스레 먹어 치우더니, 그러고 나서 한결\n" +
 			"누그러지고 심지어 꽤 친근해지기까지 해.")
-	case DWARF:
-		if !g.here(FOOD) {
-			return g.repDefault()
-		}
-		g.dflag++
-		return g.rep("이 바보야, 난쟁이는 석탄만 먹어! 이제 녀석을 제대로 화나게 했어!")
-	default:
-		return g.rep(g.defaultMsg[CALM])
-	}
-	return g.rep("여기엔 그게 먹고 싶어 할 만한 게 없어 (너라면 모를까).")
-}
 
 @ 열고 닫기. 자물쇠가 있는 것은 격자문과 사슬뿐이고, 그나마 열쇠가
 있어야 한다. 나머지는 사정 설명이다.

@@ -91,18 +91,7 @@ func (g *Game) doIntransitive() actResult {
 		return g.repDefault()
 	case ON, OFF, POUR, FILL, DRINK, BLAST, KILL:
 		return aTrans()
-	case TAKE:
-		if g.first[g.loc] == NOTHING || g.link[g.first[g.loc]] != NOTHING || g.dwarf() {
-			return g.getObjR()
-		}
-		g.obj = g.first[g.loc]
-		return aTrans()
-	case EAT:
-		if !g.here(FOOD) {
-			return g.getObjR()
-		}
-		g.obj = FOOD
-		return aTrans()
+	@<집을 것과 먹을 것을 짐작한다@>@;
 	case OPEN, CLOSE:
 		@<열거나 닫을 것을 짐작한다@>@;
 	case READ:
@@ -114,6 +103,17 @@ func (g *Game) doIntransitive() actResult {
 		g.lookCount = 3
 		return g.rep("알았어, 이제부터 어떤 장소든 처음 왔을 때만 전부 설명할게.\n" +
 			"전체 설명을 보려면 \"봐\"라고 해.")
+	@<점수·종료·저장 명령을 처리한다@>@;
+	case FEEFIE:
+		@<주문의 진행을 살핀다@>@;
+	default:
+		return g.getObjR()
+	}
+}
+
+@ 게임 살림 명령들. 점수를 물으면 알려 주되 그만둘 기회도 주고, 저장과 복원은 저장 장의 몫이다.
+
+@<점수·종료·저장 명령을 처리한다@>=
 	case SCORE:
 		fmt.Fprintf(g.out, "지금 그만두면 너는 %d점을 얻어.\n"+
 			"만점은 %d점이야.\n", g.score()-4, maxScore)
@@ -141,12 +141,22 @@ func (g *Game) doIntransitive() actResult {
 		}
 		g.report("게임을 불러왔어.")
 		return actResult{kind: paCommence} // 복원된 자리에서 다시 묘사
-	case FEEFIE:
-		@<주문의 진행을 살핀다@>@;
-	default:
-		return g.getObjR()
-	}
-}
+
+@ 방에 물건이 꼭 하나면 \.{가져가}의 대상은 그것이고, 음식이 보이면 \.{먹어}의 대상도 뻔하다.
+
+@<집을 것과 먹을 것을 짐작한다@>=
+	case TAKE:
+		if g.first[g.loc] == NOTHING || g.link[g.first[g.loc]] != NOTHING || g.dwarf() {
+			return g.getObjR()
+		}
+		g.obj = g.first[g.loc]
+		return aTrans()
+	case EAT:
+		if !g.here(FOOD) {
+			return g.getObjR()
+		}
+		g.obj = FOOD
+		return aTrans()
 
 @ 열고 닫기의 짐작. 격자문, 문, 대합, 굴 순으로 살피되, 사슬까지
 보이면 후보가 둘이니 되묻는다.
@@ -210,6 +220,36 @@ return g.getObjR()
 @<동작@>=
 func (g *Game) doTransitive() actResult {
 	switch g.verb {
+	@<물건과 주민 동사의 갈래@>@;
+	case OPEN, CLOSE:
+		return g.doOpenClose()
+	case READ:
+		return g.doRead()
+	case EAT:
+		return g.doEat()
+	case WAVE:
+		return g.doWave()
+	case BLAST:
+		return g.doBlast()
+	@<문지르기와 깨우기@>@;
+	case ON:
+		return g.doLampOn()
+	case OFF:
+		return g.doLampOff()
+	case DRINK:
+		return g.doDrink()
+	case POUR:
+		return g.doPour()
+	case FILL:
+		return g.doFill()
+	default:
+		return g.repDefault()
+	}
+}
+
+@ 몸통이 따로 있는 동사들은 한 줄짜리 갈래로 흩어진다.
+
+@<물건과 주민 동사의 갈래@>=
 	case SAY:
 		return g.doSay()
 	case TAKE:
@@ -222,16 +262,10 @@ func (g *Game) doTransitive() actResult {
 		return g.doKill()
 	case FEED:
 		return g.doFeed()
-	case OPEN, CLOSE:
-		return g.doOpenClose()
-	case READ:
-		return g.doRead()
-	case EAT:
-		return g.doEat()
-	case WAVE:
-		return g.doWave()
-	case BLAST:
-		return g.doBlast()
+
+@ 구현이 짧은 두 동사. \.{문질러}는 램프냐 아니냐로 갈리고, \.{깨워}는 폐쇄 후 난쟁이를 건드리는 단 한 경우에만 (치명적인) 결과가 있다.
+
+@<문지르기와 깨우기@>=
 	case RUB:
 		if g.obj == LAMP {
 			return g.repDefault()
@@ -248,20 +282,6 @@ func (g *Game) doTransitive() actResult {
 			return g.dwarvesUpset()
 		}
 		return g.repDefault()
-	case ON:
-		return g.doLampOn()
-	case OFF:
-		return g.doLampOff()
-	case DRINK:
-		return g.doDrink()
-	case POUR:
-		return g.doPour()
-	case FILL:
-		return g.doFill()
-	default:
-		return g.repDefault()
-	}
-}
 
 @ 소지품 목록. 여러 조각짜리 물건은 대표만 세고, 곰은 목록이 아니라
 따로 한 문장을 받는다 --- 곰은 소지품이 아니라 일행이니까.

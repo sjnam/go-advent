@@ -34,6 +34,10 @@ type saveState struct {
 	Tally         int
 	LostTreasures int
 
+
+@ 이어서 난쟁이부터 힌트까지, 나머지 장부들.
+
+@<저장과 불러오기@>=
 	Dflag    int
 	Dkill    int
 	Dloc     [nd + 1]location

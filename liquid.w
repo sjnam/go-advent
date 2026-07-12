@@ -165,18 +165,7 @@ func (g *Game) doTake() actResult {
 	if g.toting(g.obj) {
 		return g.repDefault() // 이미 들고 있음
 	}
-	if objBase[g.obj] != NOTHING { // 움직일 수 없는 물건
-		if g.obj == CHAIN && g.prop[BEAR] != 0 {
-			return g.rep("사슬은 아직 잠겨 있어.")
-		}
-		if g.obj == BEAR && g.prop[BEAR] == 1 {
-			return g.rep("곰은 아직 벽에 사슬로 묶여 있어.")
-		}
-		if g.obj == PLANT && g.prop[PLANT] <= 0 {
-			return g.rep("식물은 뿌리가 유난히 깊어서 뽑아낼 수가 없어.")
-		}
-		return g.rep("설마 진심은 아니겠지!")
-	}
+	@<붙박이를 집으려는 시도@>@;
 	if g.obj == WATER || g.obj == OIL {
 		if r, done := g.takeLiquid(); done {
 			return r
@@ -190,6 +179,13 @@ func (g *Game) doTake() actResult {
 			return r
 		}
 	}
+	@<새장 세트와 병을 챙긴다@>@;
+	return g.defTo(RELAX) // 알았어, 집었어
+}
+
+@ 새와 새장은 세트로 움직이고(|BIRD+CAGE-obj|는 ``나머지 한쪽''을 꺼내는 산수다), 액체가 든 병을 집으면 그림자 객체도 손으로 따라온다.
+
+@<새장 세트와 병을 챙긴다@>=
 	if g.obj == BIRD || (g.obj == CAGE && g.prop[BIRD] != 0) {
 		g.carry(BIRD + CAGE - g.obj)
 	}
@@ -201,8 +197,22 @@ func (g *Game) doTake() actResult {
 			g.place[WATER] = inhand
 		}
 	}
-	return g.defTo(RELAX) // 알았어, 집었어
-}
+
+@ 붙박이 셋에게는 사연을 말해 준다 --- 잠긴 사슬, 묶인 곰, 뿌리 깊은 식물.
+
+@<붙박이를 집으려는 시도@>=
+	if objBase[g.obj] != NOTHING { // 움직일 수 없는 물건
+		if g.obj == CHAIN && g.prop[BEAR] != 0 {
+			return g.rep("사슬은 아직 잠겨 있어.")
+		}
+		if g.obj == BEAR && g.prop[BEAR] == 1 {
+			return g.rep("곰은 아직 벽에 사슬로 묶여 있어.")
+		}
+		if g.obj == PLANT && g.prop[PLANT] <= 0 {
+			return g.rep("식물은 뿌리가 유난히 깊어서 뽑아낼 수가 없어.")
+		}
+		return g.rep("설마 진심은 아니겠지!")
+	}
 
 @ 액체 집기의 특수 사정. 그 액체가 든 병이 여기 있으면 병을 집는
 것으로 바꾸고(|done=false|: 계속 진행), 빈 병만 들고 있으면 \.{채워}로

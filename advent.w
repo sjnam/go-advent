@@ -2,7 +2,6 @@
 @s Writer int
 
 \input kotexgweb.tex
-\raggedbottom % 데이터 표가 쪽 중간에서 나뉘어도 밑단을 억지로 채우지 않는다
 \def\title{별유천지(別有天地): 거대 동굴 탐험}
 
 @* 들어가며.

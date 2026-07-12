@@ -15,6 +15,14 @@ func (g *Game) score() int {
 	if g.dflag != 0 {
 		s += 25
 	}
+	@<보물 점수를 매긴다@>@;
+	@<생존과 도달의 점수를 매긴다@>@;
+	return s
+}
+
+@ 보물은 보기만 해도 2점, 깨지지 않은 채 건물에 모셔 오면 등급대로 더 준다.
+
+@<보물 점수를 매긴다@>=
 	for k := minTreasure; k <= maxObj; k++ {
 		if g.prop[k] >= 0 {
 			s += 2
@@ -30,6 +38,10 @@ func (g *Game) score() int {
 			}
 		}
 	}
+
+@ 나머지는 살아온 이력의 점수다. 힌트 값은 여기서 제한다.
+
+@<생존과 도달의 점수를 매긴다@>=
 	s += 10 * (maxDeaths - g.deathCount)
 	if !g.gaveUp {
 		s += 4
@@ -46,8 +58,6 @@ func (g *Game) score() int {
 			s -= hintCost[j]
 		}
 	}
-	return s
-}
 
 @ 채점표 밖의 유일한 상태가 그 마지막 보너스다.
 

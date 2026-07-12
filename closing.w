@@ -107,6 +107,10 @@ g.move(DWARF, neend)
 g.prop[DWARF] = -1
 g.move(MIRROR, neend)
 g.prop[MIRROR] = -1
+
+@ 남서 끝의 진열과 뒷정리. 물과 기름을 지우는 줄은 원작이 스스로 bugfix라 적어 둔 대목이다.
+
+@<동굴을 닫는다@>=
 g.loc, g.oldloc = neend, neend
 g.move(GRATE, swend) // prop[GRATE]는 여전히 0
 g.move(SNAKE, swend)
@@ -160,6 +164,10 @@ case g.limit < 0 && g.loc < minInCave:
 		"동굴을 탐험할 수도 없어. 그냥 오늘은 여기까지 하자.\n")
 	g.gaveUp = true
 	g.quitting = true
+
+@ 경고문은 배터리의 행방에 따라 세 갈래다.
+
+@<램프를 점검한다@>=
 case g.limit <= 30 && !g.warned && g.here(LAMP):
 	fmt.Fprintf(g.out, "램프가 어두워지고 있어")
 	switch {

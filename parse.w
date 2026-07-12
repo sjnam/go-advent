@@ -65,6 +65,17 @@ parse:
 			fmt.Fprintf(g.out, "\"%s\" 같은 단어는 모르겠어.\n", g.word1)
 			goto cycle
 		}
+		@<word1을 종류에 따라 해석한다@>@;
+	}
+shift:
+	g.word1 = g.word2
+	g.word2 = ""
+	goto parse
+}
+
+@ 단어의 종류가 갈래를 정한다. 이동은 그대로 반환, 객체와 동작은 앞서 본 조각들로, 메시지는 인덱스만 기억한다.
+
+@<word1을 종류에 따라 해석한다@>=
 		switch e.typ {
 		case motionType:
 			g.mot = motion(e.meaning)
@@ -77,12 +88,6 @@ parse:
 			g.speakIdx = e.meaning
 			return inputSpeak
 		}
-	}
-shift:
-	g.word1 = g.word2
-	g.word2 = ""
-	goto parse
-}
 
 @ 매 턴의 집안일: 힌트를 저울질하고, 어둠을 기억해 두고(다음 턴의
 구덩이 판정용), 난수기를 공회전 한 번 시켜 난쟁이 추격에 변화를 주고,
@@ -217,6 +222,13 @@ func (g *Game) makeObjMeaningful() objResult {
 	}
 	objectInBottle := (g.obj == WATER && g.prop[BOTTLE] == 0) ||
 		(g.obj == OIL && g.prop[BOTTLE] == 2)
+	@<특수한 객체들의 사정을 가린다@>@;
+	return objCantSee
+}
+
+@ 사정이 딸린 특수 경우들의 목록.
+
+@<특수한 객체들의 사정을 가린다@>=
 	switch g.obj {
 	case GRATE:
 		if r := g.grateAsMotion(); r != objOK {
@@ -241,6 +253,10 @@ func (g *Game) makeObjMeaningful() objResult {
 		g.knifeLoc = -1
 		g.report("난쟁이들의 칼이 동굴 벽에 부딪히며 사라져.")
 		return objReport
+
+@ 막대와 액체는 닮은꼴 바꿔치기다.
+
+@<특수한 객체들의 사정을 가린다@>=
 	case ROD:
 		if !g.here(ROD2) {
 			return objCantSee
@@ -256,8 +272,6 @@ func (g *Game) makeObjMeaningful() objResult {
 		}
 		return objCantSee
 	}
-	return objCantSee
-}
 
 @ 지상에서 \.{창살}이라고 외치는 모험가는 십중팔구 창살로 {\it 가고}
 싶은 것이다. 어디 있느냐에 따라 웅덩이행 또는 입구행 이동으로 바꿔 준다.

@@ -126,6 +126,10 @@ const nHints = 8
 var hintCost = [nHints]int{5, 10, 2, 2, 2, 4, 5, 3}
 var hintThresh = [nHints]int{0, 0, 4, 5, 8, 75, 25, 20}
 
+
+@ 힌트를 꺼내기 전에 던지는 질문들. 0번은 환영 인사다.
+
+@<게임의 진행@>=
 var hintPrompt = [nHints]string{
 	"어드벤처에 온 걸 환영해!! 설명을 들어볼래?",
 	"흐음, 이건 단서 같은데, 읽으면 10점이 깎여.\n" +
@@ -138,7 +142,10 @@ var hintPrompt = [nHints]string{
 	"여기서 나가는 데 도움이 필요해?",
 }
 
-// 각 힌트의 본문. hint[0]은 게임 설명(instructions).
+
+@ 그리고 힌트의 본문. 0번은 게임 설명으로, 마지막 줄의 crediting이 원작의 것 그대로다 --- ``버그는 전부 Don Knuth가 더했지.''
+
+@<게임의 진행@>=
 var hintText = [nHints]string{
 	"이 근처 어딘가에 거대한 동굴이 있어. 많은 이들이 그곳에서 보물과\n" +
 		"황금으로 부를 얻었지만, 들어간 사람 중 더러는 다시 보이지 않는다는\n" +
@@ -285,6 +292,39 @@ func (g *Game) simulate() {
 		}
 
 	commence:
+		@<도착지를 보고하고 작은 순환을 돈다@>@;
+	tryMove:
+		@<다음 위치를 계산한다@>@;
+	death:
+		if !g.handleDeath() { // 부활 실패면 게임 종료
+			return
+		}
+		goto commence // 부활: 새 장소에서 상태 다시 보고
+	}
+}
+
+@ |tryMove|: 특수 이동을 가리고, 보통 이동이면 위치 기억을 갱신한 뒤 이동표를 푼다.
+
+@<다음 위치를 계산한다@>=
+		switch g.handleSpecialMotion() {
+		case smStay:
+			continue // 제자리에서 다시 상태 보고
+		case smGoForIt:
+			// BACK: oldloc 갱신을 이미 끝냈으니 곧장 다음 위치 계산
+		case smNormal:
+			g.oldoldloc = g.oldloc
+			g.oldloc = g.loc
+		}
+		g.determineNextLocation()
+		if g.dying {
+			goto death
+		}
+		continue
+
+
+@ |commence|: 도착지를 묘사하고, 작은 순환이 돌려주는 값대로 갈래를 튼다.
+
+@<도착지를 보고하고 작은 순환을 돈다@>=
 		if g.reportState() { // 강제 이동 장소면 true: 곧장 다시 이동
 			goto tryMove
 		}
@@ -305,29 +345,6 @@ func (g *Game) simulate() {
 			goto commence // 불을 켜는 등으로 제자리에서 다시 묘사
 		}
 
-	tryMove:
-		switch g.handleSpecialMotion() {
-		case smStay:
-			continue // 제자리에서 다시 상태 보고
-		case smGoForIt:
-			// BACK: oldloc 갱신을 이미 끝냈으니 곧장 다음 위치 계산
-		case smNormal:
-			g.oldoldloc = g.oldloc
-			g.oldloc = g.loc
-		}
-		g.determineNextLocation()
-		if g.dying {
-			goto death
-		}
-		continue
-
-	death:
-		if !g.handleDeath() { // 부활 실패면 게임 종료
-			return
-		}
-		goto commence // 부활: 새 장소에서 상태 다시 보고
-	}
-}
 
 @ 작은 순환. 명령을 받아 동작을 수행하고, 큰 순환으로 돌아가야 할 일이
 생기면 그 사유를 값으로 돌려준다. |keep|은 ``가져가 뭘?''처럼 동사를
@@ -343,23 +360,15 @@ const (
 	mcDeath                       // 죽음
 )
 
+
+@ 순환 자체는 단순하다: 입력을 받아 수행하고, 결과가 큰 순환의 소관이면 돌려보낸다.
+
+@<게임의 진행@>=
 func (g *Game) minorCycle() minorResult {
 	keep := false
 	for {
 		var res paResult
-		switch g.getUserInput(keep) {
-		case inputEOF:
-			return mcEnd
-		case inputMotion:
-			return mcTryMove
-		case inputTransitive:
-			res = g.performAction(true)
-		case inputIntransitive:
-			res = g.performAction(false)
-		case inputSpeak:
-			g.report(g.message[g.speakIdx])
-			res = paDone
-		}
+		@<명령을 받아 수행하고 결과를 res에 담는다@>@;
 		if g.quitting {
 			return mcEnd
 		}
@@ -384,6 +393,23 @@ func (g *Game) report(msg string) {
 		fmt.Fprintf(g.out, "%s\n", msg)
 	}
 }
+
+@ 명령의 다섯 갈래. 이동이면 곧장 큰 순환으로, 동작이면 수행하고 그 결과를 살핀다.
+
+@<명령을 받아 수행하고 결과를 res에 담는다@>=
+		switch g.getUserInput(keep) {
+		case inputEOF:
+			return mcEnd
+		case inputMotion:
+			return mcTryMove
+		case inputTransitive:
+			res = g.performAction(true)
+		case inputIntransitive:
+			res = g.performAction(false)
+		case inputSpeak:
+			g.report(g.message[g.speakIdx])
+			res = paDone
+		}
 
 @ 도착지의 묘사. 방문 횟수에 따라 긴 설명과 짧은 설명을 고르고, 곰을
 데리고 다니면 그 사실도 알린다. 어둠 속을 계속 걸으면 35\%의 확률로
