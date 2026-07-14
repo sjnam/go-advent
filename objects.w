@@ -48,7 +48,7 @@ const (
 	WATER
 	OIL
 
-@ 거울, 식물, 용, 트롤, 곰 --- 조각이 여럿인 붙박이들이 몰린 구간이다.
+@ 거울, 식물, 용, 트롤, 곰---조각이 여럿인 붙박이들이 몰린 구간이다.
 @d MIRROR MIRROR_ PLANT PLANT2 PLANT2_ STALACTITE SHADOW SHADOW_
 @d AXE ART PIRATE DRAGON DRAGON_ BRIDGE BRIDGE_ TROLL TROLL_
 @d TROLL2 TROLL2_ BEAR MESSAGE GEYSER PONY BATTERIES MOSS
@@ -112,7 +112,7 @@ func isTreasure(t object) bool { return t >= minTreasure }
 장소(들고 있으면 |inhand|, 세상에 없으면 |limbo|), |prop|은 물건의
 상태값(문이 열렸는지, 새가 새장에 있는지$\ldots$), 그리고 같은 장소의
 물건들은 |first|와 |link|로 엮인 연결 리스트에 매달린다. 1970년대의
-자료구조가 반세기를 건너 그대로 왔다 --- 리스트에 앞에서 끼우니, 나중에
+자료구조가 반세기를 건너 그대로 왔다---리스트에 앞에서 끼우니, 나중에
 떨어뜨린 물건이 먼저 눈에 띈다는 자연스러운 부수 효과까지 그대로다.
 
 @<게임의 상태@>=
@@ -130,7 +130,7 @@ func (g *Game) here(t object) bool   { return g.toting(t) || g.place[t] == g.loc
 
 @ |drop|은 (리스트에 없던) 물건을 장소 |l|에 놓고, |carry|는 물건을
 집어 들며 리스트에서 떼어 낸다. |carry|의 안쪽 |for|는 몸통 없이
-돌며 리스트에서 |t|의 앞 원소를 찾는다 --- 커누스 세대의 포인터 춤이다.
+돌며 리스트에서 |t|의 앞 원소를 찾는다---커누스 세대의 포인터 춤이다.
 |move|는 그 둘의 합성이고, |destroy|는 |limbo|로 보내는 완곡어법이다.
 
 @<객체@>=
@@ -172,7 +172,7 @@ func (g *Game) destroy(t object)          { g.move(t, limbo) }
 @ 여러 조각으로 된 물건이 ``여기 있는가''는 조각을 훑어야 안다.
 조각들의 대표를 |objBase|가 알려 주는데, 움직일 수 있는 보통 물건은
 |NOTHING|, 붙박이는 제 대표 조각이다. 이 맵은 생성 파일
-\.{objdata.go}에 있지만 game 중에 바뀌기도 한다 --- 용을 잡으면
+\.{objdata.go}에 있지만 game 중에 바뀌기도 한다---용을 잡으면
 양탄자가 붙박이에서 보물로 풀려나는 식이다.
 
 @<객체@>=
@@ -202,7 +202,7 @@ func (g *Game) loadObjects() {
 	g.holding = objInitHolding
 }
 
-@ 물건의 텍스트는 사람 몫이다. 먼저 이름 --- 소지품 목록에 찍히는
+@ 물건의 텍스트는 사람 몫이다. 먼저 이름---소지품 목록에 찍히는
 문자열이다. 이름이 없는 물건(뱀, 용, 트롤$\ldots$)은 들고 다닐 수 없는
 것들이라 목록에 나올 일도 없다.
 
@@ -241,7 +241,7 @@ var objName = map[object]string{
 	CHAIN:     "황금 사슬",
 }
 
-@ 그리고 묘사 --- 방에 들어섰을 때 물건이 제 상태에 따라 들려주는
+@ 그리고 묘사---방에 들어섰을 때 물건이 제 상태에 따라 들려주는
 문장들이다. 물건 |t|의 상태 |prop[t]|에 따른 묘사가
 |objNote[objOffset[t]+prop[t]]|에 있다. 오프셋표는 \.{objdata.go}에서
 오지만 문장은 여기 있다. 빈 문자열은 ``그 상태에서는 아무 말 없음''이다.
@@ -334,7 +334,7 @@ var objNote = []string{
 	"물을 너무 줬어! 식물이 쪼그라들어! 이, 이런...",
 	"",
 
-@ 그리고 병과 잡지, 서판과 뱀, 새와 막대와 램프 --- 여행의 채비들.
+@ 그리고 병과 잡지, 서판과 뱀, 새와 막대와 램프---여행의 채비들.
 
 @<도구와 나머지의 묘사@>=
 	"여기 물이 든 병이 있어.",
