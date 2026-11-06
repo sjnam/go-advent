@@ -29,12 +29,15 @@ $ go run .
 (`advent.go`, `advent_test.go`)와 문서(`advent.pdf`)는 거기서
 생성합니다 — 저장소에는 두지 않습니다. Go 1.26 이상과
 [GWEB](https://github.com/sjnam/gweb)(`gtangle`/`gweave`)이 필요합니다.
+`make twill`에는 GWEB 0.10.7 이상의 `gtwill`과 `gtwill-refsort`, `python3`도
+필요합니다.
 
 ```sh
 make build            # advent.w -> advent.go, advent_test.go -> advent
 ./advent              # 플레이 (매번 다른 모험 — 현재 시각을 난수 시드로)
 
 make doc              # advent.pdf 조판 (gweave + luatex)
+make twill            # 오른쪽 쪽마다 미니 색인을 단 책꼴 advent-twill.pdf (gtwill)
 make test             # go test ./...
 ```
 

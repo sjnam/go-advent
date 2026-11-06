@@ -6,7 +6,7 @@
 
 구현은 게임의 설계가 거저 준 선물이다. 영속 상태가 죄다 |Game| 한
 곳에 모여 있으니, 그걸 적었다 되읽으면 끝이다. 다만 \GO/의
-|encoding/gob|은 비공개 필드를 직렬화하지 못하므로, 내보낸(대문자)
+\.{encoding/gob}은 비공개 필드를 직렬화하지 못하므로, 내보낸(대문자)
 필드를 가진 |saveState|로 옮겨 담는다. 어휘와 메시지는 시작할 때
 다시 만들면 되니 젖혀 두고, 턴 사이에만 뜻이 있는 임시 값(|mot|,
 |verb|, |obj|$\ldots$)도 저장 시점(턴 경계)에는 무의미하니 뺀다.
@@ -34,30 +34,31 @@ type saveState struct {
 	Tally         int
 	LostTreasures int
 
+	@<난쟁이부터 힌트까지의 필드@>@;
+}
 
 @ 이어서 난쟁이부터 힌트까지, 나머지 장부들.
 
-@<저장과 불러오기@>=
-	Dflag    int
-	Dkill    int
-	Dloc     [nd + 1]location
-	Odloc    [nd + 1]location
-	Dseen    [nd + 1]bool
-	KnifeLoc int
+@<난쟁이부터 힌트까지의 필드@>=
+Dflag    int
+Dkill    int
+Dloc     [nd + 1]location
+Odloc    [nd + 1]location
+Dseen    [nd + 1]bool
+KnifeLoc int
 
-	Clock1, Clock2 int
-	Panicked       bool
-	Warned         bool
-	DeathCount     int
-	Bonus          int
-	Closed         bool
-	Foobar         int
+Clock1, Clock2 int
+Panicked       bool
+Warned         bool
+DeathCount     int
+Bonus          int
+Closed         bool
+Foobar         int
 
-	Hinted    [nHints]bool
-	HintCount [nHints]int
-	Limit     int
-	GaveUp    bool
-}
+Hinted    [nHints]bool
+HintCount [nHints]int
+Limit     int
+GaveUp    bool
 
 @ 옮겨 담기와 되돌리기. 재미없는 필드 나르기의 연속이지만, 문학적
 프로그램이라고 세금이 면제되지는 않는다.

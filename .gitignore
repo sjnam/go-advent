@@ -21,6 +21,12 @@ advent.toc
 advent.idx
 advent.scn
 
+# make twill 생성물 (twill/bux.py가 쓰는 .bux 포함)
+advent.aux
+advent.bux
+system.bux
+advent-twill.*
+
 # 빌드 바이너리 (README의 go build -o advent .)
 /advent
 /go-advent

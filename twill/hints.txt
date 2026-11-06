@@ -1,0 +1,25 @@
+# gtwill 힌트: 서술의 |...|에는 나오지만 웹의 코드가 정의하지 않는 이름들의 뜻.
+# make twill이 twill/bux.py로 이 표에서 advent.bux를 만든다.
+# go-mmix의 twill/hints.txt와 꼴이 같다(다만 웹이 하나뿐이라 "== 웹이름" 줄은 없다).
+#
+# 한 줄에 하나씩:  이름  자리  뜻
+#
+# 자리
+#   §            그 이름이 |...| 안에 처음 나오는 절. 절 번호는 조판할 때마다
+#                찾으니, 절을 보태거나 빼도 어긋나지 않는다.
+#   §12          12절. 이름이 그 절의 |...|에 정말 나오는지 검사한다.
+#   "advent.w"   문자열. 커누스의 CWEB 원본에 있던 이름이고, "C"면 C 언어나 표준
+#                라이브러리의 이름이다. TeX 특수 문자는 gtwill이 막아 준다.
+#
+# 뜻
+#   =EXPR        `= EXPR'로 적힌다. EXPR은 Go 원문이고 gweave로 조판한다. C 이름이면
+#                이 옮김에서 그것을 대신하는 Go 쪽 이름이나 식이다.
+#   :EXPR        `: EXPR'로 적힌다(형 따위).
+#   -            자리만 적힌다(\zip).
+#
+# cavedata.go와 objdata.go의 이름은 bux.py가 system.bux로 모으므로 여기 없다.
+
+change_to "advent.w" =changeTo
+fgets "C" -
+new_obj "advent.w" -
+try_motion "advent.w" =paTryMove
